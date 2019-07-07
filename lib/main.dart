@@ -5,6 +5,8 @@ import 'package:node_auth/CoachProfile.dart';
 import 'package:node_auth/api_service.dart';
 import 'package:node_auth/home.dart';
 import 'package:node_auth/CoachDashboard3.dart';
+import 'package:node_auth/MenuDashboardPage.dart';
+
 import 'package:node_auth/register.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
@@ -286,7 +288,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         } else {
           Navigator.of(context).pushReplacement(
         new MaterialPageRoute(
-          builder: (context) => new CoachDashboard3(login.access_token),
+          builder: (context) => new MenuDashboardPage(login.access_token),
           fullscreenDialog: true,
           maintainState: false,
         ),
