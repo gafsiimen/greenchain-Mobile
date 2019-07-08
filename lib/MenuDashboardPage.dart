@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:node_auth/CoachProfile.dart';
+import 'package:node_auth/MenuProfilePage.dart' ;
+import 'package:node_auth/CoachDashboard2.dart' ;
 import 'package:node_auth/custom/custom_text.dart';
 import 'package:node_auth/custom/trapezoid_container.dart';
 import 'package:node_auth/main.dart';
@@ -141,11 +143,11 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                         SizedBox(height: 30),
                         InkWell(
                           onTap: () {
-                            print('tapped dashboard');
+                            print('tapped profile');
                             Navigator.of(context).pushReplacement(
                               new MaterialPageRoute(
                                 builder: (context) =>
-                                    new CoachProfile(_token),
+                                    new MenuProfilePage(_token),
                                 fullscreenDialog: true,
                                 maintainState: false,
                               ),
@@ -175,7 +177,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             Navigator.of(context).pushReplacement(
                               new MaterialPageRoute(
                                 builder: (context) =>
-                                    new MenuDashboardPage(_token),
+                                    new CoachDashboard2(_token),
                                 fullscreenDialog: true,
                                 maintainState: false,
                               ),
@@ -199,14 +201,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             ],
                           ),
                         ),
-                                                SizedBox(height: 30),
+                        SizedBox(height: 30),
                         InkWell(
                           onTap: () {
                             print('tapped logout');
                             Navigator.of(context).pushReplacement(
                               new MaterialPageRoute(
-                                builder: (context) =>
-                                    new LoginPage(),
+                                builder: (context) => new LoginPage(),
                                 fullscreenDialog: true,
                                 maintainState: false,
                               ),
@@ -230,7 +231,6 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             ],
                           ),
                         ),
-
                       ],
                     ),
                   ),
@@ -281,7 +281,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                 const EdgeInsets.only(right: 16.0, bottom: 16),
                             child: Icon(
                               Icons.menu,
-                              size: 30,
+                              size: 35,
                               color: Colors.red,
                             ),
                           ),
@@ -292,7 +292,8 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     BorderRadius.all(Radius.circular(40));
                                 _controller.forward();
                               } else {
-                                _borderRadius = BorderRadius.all(Radius.zero);
+                                _borderRadius =
+                                    BorderRadius.all(Radius.zero);
                                 _controller.reverse();
                               }
 
@@ -320,7 +321,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           },
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
+                          padding: const EdgeInsets.only(left: 1.0),
                           child: Icon(
                             Icons.account_balance_wallet,
                             color: Colors.green,

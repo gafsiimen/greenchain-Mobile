@@ -232,50 +232,7 @@ class _CoachProfileState extends State<CoachProfile> {
                           ),
                         ),
                       ),
-
-                      /*Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 10.0),
-                            child: Text('\$',
-                                style: TextStyle(
-                                    color: greenColor,
-                                    fontSize: 24.0,
-                                    fontWeight: FontWeight.bold)),
-                          ),
-                          SizedBox(width: 4.0),
-                          Text('85',
-                              style: TextStyle(
-                                  color: greenColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 52.0)),
-                        ],
-                      ),*/
-                      //Spacer(),
-                      /*Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          FloatingActionButton(
-                            onPressed: () {
-                              /*Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DetailsScreen()));*/
-                            },
-                            backgroundColor: greenColor,
-                            child: Icon(Icons.shopping_cart),
-                          ),
-                          /*Container(
-                            width: 200.0,
-                            child: Image.network(
-                              productImage,
-                              fit: BoxFit.cover,
-                            ),
-                          )*/
-                        ],
-                      ),*/
+                     
                       SizedBox(height: 16.0)
                     ],
                   ),
@@ -302,12 +259,6 @@ class _CoachProfileState extends State<CoachProfile> {
                                 color: Colors.white,
                                 //fontWeight: FontWeight.bold,
                                 fontSize: 30.0)),
-                        /* SizedBox(width: 95.0),
-                        Text('Filleuls',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20.0)),*/
                       ],
                     ),
                     Spacer(),
@@ -335,11 +286,6 @@ class _CoachProfileState extends State<CoachProfile> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 42.0),
                                   ),
-                                  /*SizedBox(width: 8.0),
-                                  Text(
-                                    'ml',
-                                    style: TextStyle(color: Colors.white54),
-                                  )*/
                                 ],
                               ),
                               Text(
@@ -372,11 +318,6 @@ class _CoachProfileState extends State<CoachProfile> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 42.0),
                                   ),
-                                  /*SizedBox(width: 8.0),
-                                  Text(
-                                    'c',
-                                    style: TextStyle(color: Colors.white54),
-                                  )*/
                                 ],
                               ),
                               Text(

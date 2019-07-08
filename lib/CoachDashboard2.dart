@@ -140,14 +140,29 @@ List lessons;
       ),
     );
     final topAppBar = AppBar(
+      
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      title: Text('Test title'),
+      title: Column(
+         mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Icon(Icons.list,size: 35,color: Colors.red,),
+          SizedBox(width: 10.0), 
+          Text('Mes Trieurs',style: new TextStyle(
+                                                  fontFamily: 'Pacifico',
+                                                  fontSize: 24.0,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 5,
+                                                ),),
+        ],
+      ),
       actions: <Widget>[
-        IconButton(
+        /*IconButton(
           icon: Icon(Icons.list),
           onPressed: () {},
-        )
+        ),*/
       ],
     );
 
