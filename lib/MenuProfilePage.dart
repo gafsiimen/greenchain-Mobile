@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:node_auth/MenuDashboardPage.dart';
 import 'package:node_auth/MenuProfilePage.dart';
-import 'package:node_auth/CoachDashboard2.dart';
+import 'package:node_auth/TrieursPage.dart';
 import 'package:node_auth/main.dart';
 import 'package:node_auth/api_service.dart';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
@@ -194,7 +194,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                             Navigator.of(context).pushReplacement(
                               new MaterialPageRoute(
                                 builder: (context) =>
-                                    new CoachDashboard2(_token),
+                                    new TrieursPage(_token),
                                 fullscreenDialog: true,
                                 maintainState: false,
                               ),

@@ -8,17 +8,17 @@ import 'package:http/http.dart' as http;
 import 'package:node_auth/lesson.dart';
 import 'package:node_auth/detail_page.dart';
 
-class CoachDashboard2 extends StatefulWidget {
+class TrieursPage extends StatefulWidget {
   final String token;
   //final String email;
 
-  CoachDashboard2(this.token);
+  TrieursPage(this.token);
 
   @override
-_CoachDashboard2State createState() => _CoachDashboard2State();
+_TrieursPageState createState() => _TrieursPageState();
 }
 
-class _CoachDashboard2State extends State<CoachDashboard2> {
+class _TrieursPageState extends State<TrieursPage> {
   String _token, barcode;
   int _atScanned, _todayScanned;
   User _user;
@@ -43,14 +43,14 @@ List lessons;
   Widget build(BuildContext context) {
     ListTile makeListTile(Lesson lesson) => ListTile(
           contentPadding:
-              EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+              EdgeInsets.symmetric(horizontal: 0.0, vertical: 10.0),
           leading: Container(
-            padding: EdgeInsets.only(right: 12.0),
+            //padding: EdgeInsets.only(right: 12.0),
             decoration: new BoxDecoration(
                 border: new Border(
-                    right: new BorderSide(width: 1.0, color: Colors.white24))),
+                    right: new BorderSide(width: 2.0, color: Color.fromRGBO(55, 230, 199, 1.0)))),
             child: Image.asset(
-                                      'assets/user.png',
+                                      'assets/no-avatar.png',
                                       width: 90.0,
                                       height: 90.0,
                                     ),
@@ -69,14 +69,14 @@ List lessons;
                     // tag: 'hero',
                     child: LinearProgressIndicator(
                         backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
-                        value: lesson.indicatorValue,
+                        value: lesson.indicatorValue, //100%
                         valueColor: AlwaysStoppedAnimation(Colors.green)),
                   )),
               Expanded(
                 flex: 4,
                 child: Padding(
                     padding: EdgeInsets.only(left: 10.0),
-                    child: Text(lesson.level,
+                    child: Text(lesson.level, //Trieur
                         style: TextStyle(color: Colors.white))),
               )
             ],
@@ -143,14 +143,17 @@ List lessons;
       
       elevation: 0.1,
       backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
-      title: Column(
+      title: Row(
          mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Icon(Icons.list,size: 35,color: Colors.red,),
-          SizedBox(width: 10.0), 
-          Text('Mes Trieurs',style: new TextStyle(
+          Padding(
+            padding: const EdgeInsets.only(right:50.0,top: 4,bottom: 8),
+            child: Icon(Icons.list,size: 35,color: Colors.red,),
+          ),
+          //SizedBox(width: 20.0), 
+          Text('Mes Trieurs',style: new TextStyle(color: Color.fromRGBO(55, 230, 199, 1.0),
                                                   fontFamily: 'Pacifico',
                                                   fontSize: 24.0,
                                                   fontWeight: FontWeight.w600,
@@ -167,10 +170,10 @@ List lessons;
     );
 
     return Scaffold(
-      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),
+      backgroundColor: Color.fromRGBO(58, 66, 86, 1.0),      
       appBar: topAppBar,
       body: makeBody,
-      bottomNavigationBar: makeBottom,
+      //bottomNavigationBar: makeBottom,
     );
   }
 }
