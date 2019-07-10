@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:node_auth/lesson.dart';
 import 'package:flutter/material.dart';
 
@@ -245,7 +246,7 @@ class DetailPage extends StatelessWidget {
     );
     final readButton = Container(
       //padding: EdgeInsets.symmetric(vertical: 16.0),
-      padding: EdgeInsets.only(top: 16,bottom: 2),
+      padding: EdgeInsets.only(top: 16, bottom: 2),
       width: MediaQuery.of(context).size.width,
       child: Column(
         /*crossAxisAlignment: CrossAxisAlignment.center,
@@ -314,7 +315,6 @@ class DetailPage extends StatelessWidget {
                 height: 180.0,
                 width: MediaQuery.of(context).size.width / 2 - 35,
                 decoration: BoxDecoration(
-                  
                   image: new DecorationImage(
                       fit: BoxFit.fill,
                       image: new AssetImage('assets/empty.png')),
@@ -323,30 +323,28 @@ class DetailPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     SizedBox(
-                              height: 55,
-                            ),
+                      height: 55,
+                    ),
                     Container(
-                              width: 80,
-                              height: 80,
-                              
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40)),
-                                  border: Border.all(
-                                    width: 5,
-                                    color: Color.fromRGBO(55, 230, 199, 1.0),
-                                  )),
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 15.0),
-                                child: new Text('250',
-                                    textAlign: TextAlign.center,
-                                    style: new TextStyle(
-                                        color: Color.fromRGBO(55, 230, 199, 1.0),
-                                        fontFamily: 'Athletic',
-                                        fontSize: 30.0)),
-                              ),
-                            )
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(40)),
+                          border: Border.all(
+                            width: 5,
+                            color: Color.fromRGBO(55, 230, 199, 1.0),
+                          )),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 15.0),
+                        child: new Text('250',
+                            textAlign: TextAlign.center,
+                            style: new TextStyle(
+                                color: Color.fromRGBO(55, 230, 199, 1.0),
+                                fontFamily: 'Athletic',
+                                fontSize: 30.0)),
+                      ),
+                    )
                     /*Text(
                       'Trieurs',
                       style: TextStyle(
@@ -360,17 +358,19 @@ class DetailPage extends StatelessWidget {
                 height: 180.0,
                 width: MediaQuery.of(context).size.width / 2 - 35,
                 decoration: BoxDecoration(
-                  
                   image: new DecorationImage(
-                      fit: BoxFit.fill,
-                      image: new AssetImage('assets/full.png')),
+                    fit: BoxFit.fill, 
+                    
+                    image: new AssetImage('assets/full.png'),
+                  ),
                 ),
+
+                
+
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(
-                              height: 55,
-                            ),
+                    SizedBox(height: 55,),
                     Container(
                               width: 80,
                               height: 80,

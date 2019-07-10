@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/MyFlutterApp.ttf
 ///
-/// 
+///
 /// * Elusive, Copyright (C) 2013 by Aristeides Stathopoulos
 ///         Author:    Aristeides Stathopoulos
 ///         License:   SIL (http://scripts.sil.org/OFL)
@@ -27,7 +27,10 @@ class MyFlutterApp {
   MyFlutterApp._();
 
   static const _kFontFam = 'MyFlutterApp';
+  static const _kFontFam2 = 'MyFlutterApp2';
 
   static const IconData barcode = const IconData(0xe800, fontFamily: _kFontFam);
-  static const IconData barcode_1 = const IconData(0xe801, fontFamily: _kFontFam);
+  static const IconData barcode_1 =
+      const IconData(0xe801, fontFamily: _kFontFam);
+  static const IconData logout = const IconData(0xe801, fontFamily: _kFontFam2);
 }

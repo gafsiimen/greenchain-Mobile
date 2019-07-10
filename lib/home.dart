@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 //import 'package:image/image.dart' as prefix0;
 import 'package:node_auth/api_service.dart';
 import 'package:http/http.dart' as http;
-//import 'package:node_auth/main.dart';
+import 'package:node_auth/main.dart';
 
 //import 'package:image_picker/image_picker.dart';
 
@@ -68,13 +68,43 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Padding(
-              padding: const EdgeInsets.fromLTRB(6, 50, 6, 0),
+            padding: const EdgeInsets.only(top:20),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                InkWell(
+                  onTap: () {
+                            print('tapped logout');
+                            Navigator.of(context).pushReplacement(
+                              new MaterialPageRoute(
+                                builder: (context) => new LoginPage(),
+                                fullscreenDialog: true,
+                                maintainState: false,
+                              ),
+                            );
+                          },
+                                  child: Padding(
+                    padding: const EdgeInsets.only(left:8.0,right: 24,bottom: 8),
+                    child: Icon(
+
+                      (MyFlutterApp.MyFlutterApp.logout),
+                      size: 40,
+                      color: Colors.red,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
               child: new Card(
                 color: Colors.blue[50].withOpacity(1.0),
                 child: new Padding(
                   padding: const EdgeInsets.all(8),
                   child: new Column(
                     children: <Widget>[
+                      
                       new Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
@@ -126,60 +156,57 @@ class _HomePageState extends State<HomePage> {
             ),
             new Center(
               // circles
-              child: new Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: new Column(
-                  children: <Widget>[
-                    new Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        new Container(
-                          //width: 50.0,
-                          //height: 50.0,
-                          padding: const EdgeInsets.all(
-                              50), //I used some padding without fixed width and height
-                          decoration: new BoxDecoration(
-                            shape: BoxShape
-                                .circle, // You can use like this way or like the below line
-                            //borderRadius: new BorderRadius.circular(30.0),
-                            color: Colors.lightGreen,
-                          ),
-                          child: new Text(
-                              "${_todayScanned != null ? _todayScanned : "x"}",
-                              // "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
-                              style: new TextStyle(
-                                  color: Colors.yellow,
-                                  fontFamily: 'Athletic',
-                                  fontSize:
-                                      50.0)), // You can add a Icon instead of text also, like below.
-                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+              child: new Column(
+                children: <Widget>[
+                  new Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    // mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      new Container(
+                        //width: 50.0,
+                        //height: 50.0,
+                        padding: const EdgeInsets.all(
+                            50), //I used some padding without fixed width and height
+                        decoration: new BoxDecoration(
+                          shape: BoxShape
+                              .circle, // You can use like this way or like the below line
+                          //borderRadius: new BorderRadius.circular(30.0),
+                          color: Colors.lightGreen,
                         ),
-                        new Container(
-                          //width: 50.0,
-                          //height: 50.0,
-                          padding: const EdgeInsets.all(
-                              50), //I used some padding without fixed width and height
-                          decoration: new BoxDecoration(
-                            shape: BoxShape.circle,
-                            // You can use like this way or like the below line
-                            //borderRadius: new BorderRadius.circular(30.0),
-                            color: Colors.redAccent,
-                          ),
-                          child: new Text(
-                              "${_atScanned != null ? _atScanned : "y"}",
-                              style: new TextStyle(
-                                  fontFamily: 'Athletic',
-                                  color: Colors.blueAccent,
-                                  fontSize:
-                                      50.0)), // You can add a Icon instead of text also, like below.
-                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        child: new Text(
+                            "${_todayScanned != null ? _todayScanned : "x"}",
+                            // "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
+                            style: new TextStyle(
+                                color: Colors.yellow,
+                                fontFamily: 'Athletic',
+                                fontSize:
+                                    50.0)), // You can add a Icon instead of text also, like below.
+                        //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                      ),
+                      new Container(
+                        //width: 50.0,
+                        //height: 50.0,
+                        padding: const EdgeInsets.all(
+                            50), //I used some padding without fixed width and height
+                        decoration: new BoxDecoration(
+                          shape: BoxShape.circle,
+                          // You can use like this way or like the below line
+                          //borderRadius: new BorderRadius.circular(30.0),
+                          color: Color(0xff32a05f),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                        child: new Text(
+                            "${_atScanned != null ? _atScanned : "y"}",
+                            style: new TextStyle(
+                                fontFamily: 'Athletic',
+                                color: Colors.blue[100], 
+                                fontSize:
+                                    50.0)), // You can add a Icon instead of text also, like below.
+                        //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
             new Center(
@@ -200,7 +227,7 @@ class _HomePageState extends State<HomePage> {
                               right:
                                   30), //I used some padding without fixed width and height
 
-                          child: new Text('Scanné\naujourd\'hui',
+                          child: new Text('Scannés\naujourd\'hui',
                               textAlign: TextAlign.center,
                               style: new TextStyle(
                                 color: Colors.black,
@@ -219,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                               right:
                                   18), //I used some padding without fixed width and height
 
-                          child: new Text('Totale\nscannée',
+                          child: new Text('Totale\nscannés',
                               textAlign: TextAlign.center,
                               style: new TextStyle(
                                 color: Colors.black,
@@ -319,6 +346,37 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.only(top:16.0),
+              child: Container(
+                color: Color.fromRGBO(55, 230, 199, 1.0),
+                height: 50,
+                child: Row(
+                  
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Icon(Icons.home, color: Colors.black, size: 30),
+                    Icon(Icons.blur_on, color: Colors.black, size: 30),
+
+                    /*IconButton(
+                    icon: Icon(Icons.blur_on, color: Colors.white),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.hotel, color: Colors.white),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.account_box, color: Colors.white),
+                    onPressed: () {},
+                  )*/
+                  ],
+                ),
+                  ),
+            ),
+             
+            
           ],
         ),
       ),

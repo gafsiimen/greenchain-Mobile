@@ -42,6 +42,9 @@ flutter:
    - assets/no-avatar.png
    - assets/empty.png
    - assets/full.png
+   - assets/empty2.png
+   - assets/full2.png
+   
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
@@ -64,6 +67,9 @@ flutter:
    - family: MyFlutterApp
      fonts:
      - asset: assets/fonts/MyFlutterApp.ttf
+   - family: MyFlutterApp2
+     fonts:
+     - asset: assets/fonts/MyFlutterApp2.ttf
    - family: Pacifico
      fonts:
      - asset: assets/fonts/Pacifico.ttf  
