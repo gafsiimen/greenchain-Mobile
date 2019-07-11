@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:node_auth/CoachProfile.dart';
-import 'package:node_auth/MenuProfilePage.dart' ;
-import 'package:node_auth/TrieursPage.dart' ;
-import 'package:node_auth/MenuTrieursPage.dart' ;
-
+import 'package:node_auth/MenuProfilePage.dart';
+import 'package:node_auth/TrieursPage.dart';
+import 'package:node_auth/MenuTrieursPage.dart';
 import 'package:node_auth/custom/custom_text.dart';
 import 'package:node_auth/custom/trapezoid_container.dart';
 import 'package:node_auth/main.dart';
+import 'package:node_auth/api_service.dart';
+import 'package:http/http.dart' as http;
 
 final Color backgroundColor = Color(0xFF4A4A58);
 var darkGreenColor = Color(0xff279152);
@@ -30,6 +31,13 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   String _token;
   BorderRadius _borderRadius = BorderRadius.all(Radius.zero);
 
+  ApiService _apiService;
+  User _user;
+  Sac _sacs;
+  Point _points;
+
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +48,12 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
         Tween<double>(begin: 0.5, end: 1).animate(_controller);
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
+
+    _apiService = new ApiService();
+
+    getUserInformation();
+    getCoachSacs();
+    getCoachPoints();
   }
 
   @override
@@ -56,6 +70,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
 
     return Scaffold(
       backgroundColor: backgroundColor,
+      key: _scaffoldKey,
       body: Stack(
         children: <Widget>[
           menu(context),
@@ -96,7 +111,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               color: Colors.white, size: 30.0),
                           SizedBox(width: 10.0),
                           Text(
-                            'Moha_coach',
+                            _user?.firstname ?? "",
                             style: TextStyle(
                                 fontFamily: 'pacifico',
                                 color: Colors.white,
@@ -294,8 +309,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     BorderRadius.all(Radius.circular(40));
                                 _controller.forward();
                               } else {
-                                _borderRadius =
-                                    BorderRadius.all(Radius.zero);
+                                _borderRadius = BorderRadius.all(Radius.zero);
                                 _controller.reverse();
                               }
 
@@ -360,17 +374,28 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     BorderRadius.all(Radius.circular(40)),
                                 color: Colors.blue,
                               ),
-                              child: new Text('250',
+                              child: _points!=null ?
+                              new Text(_points.total_available.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: new TextStyle(
+                                      color: Colors.greenAccent,
+                                      fontFamily: 'Athletic',
+                                      fontSize: 40.0)):
+                                                                    new Text('',
                                   textAlign: TextAlign.center,
                                   style: new TextStyle(
                                       color: Colors.greenAccent,
                                       fontFamily: 'Athletic',
                                       fontSize: 40.0)),
+
                             ),
                             title: CustomText.text(
                                 text: "GP disponibles", size: 22),
-                            subtitle: CustomText.text(
-                                text: "18 GP en attente", size: 16)),
+                            subtitle: _points!=null ?
+                             CustomText.text(
+                                text: _points.total_pending.toString() +" GP en attente", size: 16) : 
+                                CustomText.text(
+                                text: "   GP en attente", size: 16)),
                       )),
                 ),
                 Text(
@@ -410,27 +435,35 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               height: 40,
                             ),
                             Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(40)),
-                                border: Border.all(
-                                  color: Color.fromRGBO(132, 140, 255, 1),
-                                  width: 5,
+                                width: 80,
+                                height: 80,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(40)),
+                                  border: Border.all(
+                                    color: Color.fromRGBO(132, 140, 255, 1),
+                                    width: 5,
+                                  ),
                                 ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(15.0),
-                                child: new Text('250',
-                                    textAlign: TextAlign.center,
-                                    style: new TextStyle(
-                                        color: Color.fromRGBO(132, 140, 255, 1),
-                                        fontFamily: 'Athletic',
-                                        fontSize: 30.0)),
-                              ),
-                            )
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: _sacs != null
+                                      ? Text(_sacs?.empty.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                              color: Color.fromRGBO(
+                                                  132, 140, 255, 1),
+                                              fontFamily: 'Athletic',
+                                              fontSize: 30.0))
+                                      : Text('',
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                              color: Color.fromRGBO(
+                                                  132, 140, 255, 1),
+                                              fontFamily: 'Athletic',
+                                              fontSize: 30.0)),
+                                ))
                           ],
                           points: [
                             Offset(0, 0),
@@ -472,12 +505,21 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                   )),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
-                                child: new Text('250',
-                                    textAlign: TextAlign.center,
-                                    style: new TextStyle(
-                                        color: Color.fromRGBO(239, 123, 175, 1),
-                                        fontFamily: 'Athletic',
-                                        fontSize: 30.0)),
+                                child: _sacs != null
+                                    ? Text(
+                                        (_sacs.collected + _sacs.selfScanned)
+                                            .toString(),
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                    color: Color.fromRGBO(239, 123, 175, 1),
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0))
+                                    : Text('',
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                    color: Color.fromRGBO(239, 123, 175, 1),
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0)),
                               ),
                             )
                           ],
@@ -499,7 +541,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           color: Color.fromRGBO(239, 123, 175, 1),
                           children: <Widget>[
                             SizedBox(
-                              height: 50,
+                              height: 58,
                             ),
                             Container(
                               width: 80,
@@ -515,12 +557,19 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
-                                child: new Text('25',
-                                    textAlign: TextAlign.center,
-                                    style: new TextStyle(
-                                        color: Color.fromRGBO(253, 187, 59, 1),
-                                        fontFamily: 'Athletic',
-                                        fontSize: 30.0)),
+                                  child: _sacs != null
+                                      ? Text(_sacs?.delivered.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                  color: Color.fromRGBO(253, 187, 59, 1),
+                                              fontFamily: 'Athletic',
+                                              fontSize: 30.0))
+                                      : Text('',
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                  color: Color.fromRGBO(253, 187, 59, 1),
+                                              fontFamily: 'Athletic',
+                                              fontSize: 30.0)),
                               ),
                             ),
                             SizedBox(
@@ -551,7 +600,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           color: Color.fromRGBO(132, 140, 255, 1),
                           children: <Widget>[
                             SizedBox(
-                              height: 35,
+                              height: 40,
                             ),
                             Container(
                               width: 80,
@@ -567,13 +616,19 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
-                                child: new Text('25',
-                                    textAlign: TextAlign.center,
-                                    style: new TextStyle(
-                                        //color: Color.fromRGBO(87, 194, 67, 1),
-                                        color: Colors.green[800],
-                                        fontFamily: 'Athletic',
-                                        fontSize: 30.0)),
+                                  child: _sacs != null
+                                      ? Text(_sacs?.confirmedNotDelivered.toString(),
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                  color: Colors.green[700],
+                                              fontFamily: 'Athletic',
+                                              fontSize: 30.0))
+                                      : Text('',
+                                          textAlign: TextAlign.center,
+                                          style: new TextStyle(
+                                  color: Colors.green[700],
+                                              fontFamily: 'Athletic',
+                                              fontSize: 30.0)),
                               ),
                             ),
                             SizedBox(
@@ -597,94 +652,6 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                     ],
                   ),
                 ),
-                /*Text(
-              "Mes Sacs",
-              style: TextStyle(
-                fontWeight: FontWeight.w700,
-                color: Colors.black,
-                fontSize: 32,
-              ),
-            ),*/
-
-                /*SizedBox(
-        height: 10,
-            ),*/
-                //Spacer(),
-                /* Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          Container(
-        //height: 100.0,
-        //width: MediaQuery.of(context).size.width / 2 - 50,
-        decoration: BoxDecoration(
-            color: darkGreenColor,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.0),
-                topRight: Radius.circular(32.0))),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  '250',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 42.0),
-                ),
-                SizedBox(width: 8.0),
-                Text(
-                  'ml',
-                  style: TextStyle(color: Colors.white54),
-                )
-              ],
-            ),
-            Text(
-              'water',
-              style: TextStyle(color: Colors.white54),
-            )
-          ],
-        ),
-          ),
-          Container(
-        //height: 100.0,
-           // width: MediaQuery.of(context).size.width / 2 - 50,
-        decoration: BoxDecoration(
-            color: darkGreenColor,
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(32.0),
-                topRight: Radius.circular(32.0))),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  '18',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 42.0),
-                ),
-                SizedBox(width: 8.0),
-                Text(
-                  'c',
-                  style: TextStyle(color: Colors.white54),
-                )
-              ],
-            ),
-            Text(
-              'Sunshine',
-              style: TextStyle(color: Colors.white54),
-            )
-          ],
-        ),
-          ),
-        ],
-            ),*/
               ],
             ),
           ),
@@ -692,4 +659,62 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
       ),
     );
   }
+
+  getUserInformation() async {
+    try {
+      final user = await _apiService.getUserProfile(_token);
+      setState(() {
+        _user = user;
+        //_createdAt = user.createdAt.toString();
+        debugPrint("getUserInformation $_user");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
+  }
+
+  getCoachSacs() async {
+    try {
+      final sacs = await _apiService.coachSacs(_token);
+      setState(() {
+        _sacs = sacs;
+
+        debugPrint("sacs= $sacs");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
+  }
+
+    getCoachPoints() async {
+    try {
+      final points = await _apiService.coachPoints(_token);
+      setState(() {
+        _points = points;
+
+        debugPrint("points= $points");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
+  }
+
 }

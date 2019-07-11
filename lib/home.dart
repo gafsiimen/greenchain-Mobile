@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui' as prefix0;
+import 'dart:ui' ;
 //import 'dart:math';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
 import 'package:flutter/material.dart';
@@ -530,7 +530,7 @@ class _HomePageState extends State<HomePage> {
         content: new Text('Unknown error occurred'),
       ));
     }
-  }
+  } 
 
   void workerCollects() {
     print('barcooooooode==' + barcode);
@@ -570,7 +570,7 @@ class _HomePageState extends State<HomePage> {
         new SnackBar(
           content: new Text(
             message,
-            textAlign: prefix0.TextAlign.center,
+            textAlign: TextAlign.center,
             style: new TextStyle(
               color: Colors.white,
               fontSize: 20.0,

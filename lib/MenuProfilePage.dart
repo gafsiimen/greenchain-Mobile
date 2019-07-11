@@ -5,6 +5,7 @@ import 'package:node_auth/MenuTrieursPage.dart';
 import 'package:node_auth/main.dart';
 import 'package:node_auth/api_service.dart';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
+import 'package:http/http.dart' as http;
 
 final Color backgroundColor = Color(0xFF4A4A58);
 var darkGreenColor = Color(0xff279152);
@@ -26,12 +27,14 @@ class _MenuProfilePageState extends State<MenuProfilePage>
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
   String _token, barcode;
+
   BorderRadius _borderRadius = BorderRadius.all(Radius.zero);
   var greenColor = Color(0xff32a05f);
   var darkGreenColor = Color(0xff279152);
   ApiService _apiService;
   User _user;
 
+  int _trieursNumber, _filleulsNumber;
   static const String barcodeRegExpString = r'^[0-9]{13}$';
   static final RegExp barcodeRegExp =
       new RegExp(barcodeRegExpString, caseSensitive: false);
@@ -43,13 +46,19 @@ class _MenuProfilePageState extends State<MenuProfilePage>
   @override
   void initState() {
     super.initState();
+    _apiService = new ApiService();
     _token = widget.token;
+
     _controller = AnimationController(vsync: this, duration: duration);
     _scaleAnimation = Tween<double>(begin: 1, end: 0.8).animate(_controller);
     _menuScaleAnimation =
         Tween<double>(begin: 0.5, end: 1).animate(_controller);
     _slideAnimation = Tween<Offset>(begin: Offset(-1, 0), end: Offset(0, 0))
         .animate(_controller);
+
+    getUserInformation();
+    getTrieursNumber();
+    getFilleulsNumber();
   }
 
   @override
@@ -63,18 +72,15 @@ class _MenuProfilePageState extends State<MenuProfilePage>
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
-     
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
+      key: _scaffoldKey,
       body: Stack(
         children: <Widget>[
-          
           menu(context),
-          
           profile(context),
-          
         ],
       ),
     );
@@ -111,7 +117,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                               color: Colors.white, size: 30.0),
                           SizedBox(width: 10.0),
                           Text(
-                            'Moha_coach',
+                            _user?.firstname ?? "",
                             style: TextStyle(
                                 fontFamily: 'pacifico',
                                 color: Colors.white,
@@ -265,8 +271,8 @@ class _MenuProfilePageState extends State<MenuProfilePage>
       duration: duration,
       top: 0,
       bottom: 0,
-      left: isCollapsed ? 0 : 0.56 * screenWidth,
-      right: isCollapsed ? 0 : -0.3 * screenWidth,
+      left: isCollapsed ? 0 : 0.60 * screenWidth,
+      right: isCollapsed ? 0 : -0.4 * screenWidth,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Material(
@@ -284,7 +290,6 @@ class _MenuProfilePageState extends State<MenuProfilePage>
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-              
               Expanded(
                 flex: 3,
                 child: Container(
@@ -350,10 +355,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                               ? Image.network(
                                                   ("http://192.168.1.101:8000/" +
                                                       _user?.avatar),
-                                                  /*Uri.https(
-                                    ApiService.baseUrl, _user?.avatar)
-                                .toString(),*/
-                                                  fit: BoxFit.cover,
+                                                  fit: BoxFit.contain,
                                                   width: 90.0,
                                                   height: 90.0,
                                                 )
@@ -535,13 +537,23 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(
-                                      '25',
+                                    _trieursNumber!=null ?
+                                      
+                                      Text( 
+                                      '$_trieursNumber',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 42.0),
+                                    ) : Text( 
+                                      '',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 42.0),
                                     ),
+                                    
+                                    
                                   ],
                                 ),
                                 Text(
@@ -567,8 +579,16 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Text(
-                                      '25',
+                                    _filleulsNumber!=null ?
+                                      
+                                      Text( 
+                                      '$_filleulsNumber',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 42.0),
+                                    ) : Text( 
+                                      '',
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
@@ -653,14 +673,145 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                   return;
                 }
                 _formKey.currentState.save();
+                //_scaffoldKey.currentState.build(context);
                 print('jalaaaaaaaaaaaal' + barcode);
                 Navigator.of(context).pop(barcode);
-                //workerCollects();
+                coachCollects();
               },
             ),
           ],
         );
       },
     );
+  }
+
+  getUserInformation() async {
+    try {
+      final user = await _apiService.getUserProfile(_token);
+      setState(() {
+        _user = user;
+        //_createdAt = user.createdAt.toString();
+        debugPrint("getUserInformation $_user");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
+  }
+
+  void coachCollects() {
+    print('barcooooooode==' + barcode);
+    print(_user.id);
+    _apiService
+        .coachCollects(_token, barcode, _user.id)
+        .then((http.Response response) {
+      print('I guess shit works');
+      print('statuuuuuuuuuuus==' + response.statusCode.toString());
+      String message = '';
+      switch (response.statusCode) {
+        case 404:
+          {
+            message = 'code à barre invalide';
+          }
+          break;
+
+        case 401:
+          {
+            message = 'Vous n\'etes pas autorisé';
+          }
+          break;
+        case 403:
+          {
+            message = 'Mais le ac déja affecté !';
+          }
+          break;
+
+          case 409:
+          {
+            message = 'Veuillez remettre le sac au propre Coach';
+          }
+          break;
+
+          case 412:
+          {
+            message = 'Sac déja confirmé';
+          }
+          break;
+        case 200:
+          {
+            message = 'Félicitation le sac à été bien confirmé';
+          }
+          break;
+        default:
+          {
+            message = 'Erreur inconnue';
+          }
+          break;
+      }
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+          content: new Text(
+            message,
+            textAlign: TextAlign.center,
+            style: new TextStyle(
+              color: Colors.white,
+              fontSize: 20.0,
+              fontFamily: 'Ubuntu',
+              //fontStyle: FontStyle.italic,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      );
+    });
+  }
+
+  getTrieursNumber() async {
+    try {
+      final number = await _apiService.coachTrieursNumber(_token);
+      setState(() {
+        _trieursNumber = int.parse(number);
+        if (number == null)
+          _trieursNumber = 0;
+        else
+          _trieursNumber = int.parse(number);
+        debugPrint("trieurs number = $number");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
+  }
+
+  getFilleulsNumber() async {
+    try {
+      final number = await _apiService.referralsNumber(_token);
+      setState(() {
+        if (number == null)
+          _filleulsNumber = 0;
+        else
+          _filleulsNumber = int.parse(number);
+
+        debugPrint("filleuls number = $number");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
   }
 }

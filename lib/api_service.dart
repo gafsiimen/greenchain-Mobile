@@ -98,6 +98,62 @@ class MyHttpException extends HttpException {
     );
   }
 }
+
+  class Sac {
+  //int code;
+  //final String error;
+  final bool success;
+  final int empty;
+  final int selfScanned;
+  final int collected;
+  final int confirmedNotDelivered;
+  final int delivered;
+  final int aT_taken;
+
+  Sac({this.success, this.empty,this.selfScanned,
+  this.collected, this.confirmedNotDelivered,this.delivered,
+  this.aT_taken
+  });
+
+  factory Sac.fromJson(Map<String, dynamic> json) {
+    return Sac(
+      //code: json['code'],
+      //error: json['error'],
+      success: json['success'],
+      empty: json['empty'],
+      selfScanned: json['SelfScanned'],
+      collected: json['collected'],
+      confirmedNotDelivered: json['ConfirmedNotDelivered'],
+      delivered: json['Delivered'],
+      aT_taken: json['AT_taken'],
+    );
+  }
+}
+
+  class Point {
+  //int code;
+  //final String error;
+  final bool success;
+  final int total_available;
+  final int total_pending;
+
+
+  Point({this.success, this.total_available,this.total_pending
+ 
+  });
+
+  factory Point.fromJson(Map<String, dynamic> json) {
+    return Point(
+      //code: json['code'],
+      //error: json['error'],
+      success: json['success'],
+      total_available: json['total_available'],
+      total_pending: json['total_pending'],
+    );
+  }
+}
+
+
 class ApiService {
   static const String baseUrl = '192.168.1.101:8000';
   //static const int port = 8000;
@@ -126,6 +182,14 @@ class ApiService {
       'Authorization' : token
     });
   }
+  Future<http.Response> put2 (String url,String token, int id){
+    return http.put(url,headers: {
+      'Accept': 'application/json',
+      'Authorization' : token
+    },body: {
+      'trieur_user_id' : id.toString(),
+    });
+  }
 
   
   Future<Login> signIn(String email, String password) async {
@@ -139,7 +203,7 @@ class ApiService {
       login.code=response.statusCode;
       return login;      
   
-  }
+  } 
   
   Future<User> getUserProfile(String token) async {
     String url = Uri.encodeFull('http://192.168.1.101:8000/api/auth/user');
@@ -165,6 +229,16 @@ class ApiService {
     return response;
   }
 
+      Future<http.Response> coachCollects(String token,String barcode,int id) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coachs/sacs/collect_sac_from_trieur/$barcode');
+
+    http.Response response = await put2(url,token,id);
+    print("Response Body: "+ response.body);    
+  
+    
+    return response;
+  }
+
 Future<WStat> workerNumbers(String token) async {
     String url = Uri.encodeFull('http://192.168.1.101:8000/api/worker/MySacsNumbers');
 
@@ -175,9 +249,51 @@ Future<WStat> workerNumbers(String token) async {
     
     return wStat;
   }
+  Future<Sac> coachSacs(String token) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/MySacsNumbers');
 
+    http.Response response = await get(url,token);
+    print("Response Body: "+ response.body);   
+    Sac wSac = Sac.fromJson(json.decode(response.body));
+    print(wSac);    
+    
+    return wSac;
+  }
 
+    Future<Point> coachPoints(String token) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/MyPoints');
 
+    http.Response response = await get(url,token);
+    print("Response Body: "+ response.body);   
+    Point wPoint = Point.fromJson(json.decode(response.body));
+    print(wPoint);    
+    
+    return wPoint;
+  }
+
+  Future<String> coachTrieursNumber(String token) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/MyTrieursNumber');
+
+    http.Response response = await get(url,token);
+    print("Response Body: "+ response.body);   
+    var resBody = json.decode(response.body);
+    var data= resBody["data"];
+    print("trieurs number = "+ data.toString());
+    
+    return (data.toString());
+  }
+
+  Future<String> referralsNumber(String token) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/users/referralsNumber');
+
+    http.Response response = await get(url,token);
+    print("Response Body: "+ response.body);   
+    var resBody = json.decode(response.body);
+    var data= resBody["data"];
+    print("filleuls number = "+ data.toString());
+    
+    return (data.toString());
+  }
 
 
 
