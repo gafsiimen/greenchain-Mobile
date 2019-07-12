@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:ui' ;
+import 'dart:ui';
 //import 'dart:math';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
 import 'package:flutter/material.dart';
@@ -68,34 +68,34 @@ class _HomePageState extends State<HomePage> {
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Padding(
-            padding: const EdgeInsets.only(top:20),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                InkWell(
-                  onTap: () {
-                            print('tapped logout');
-                            Navigator.of(context).pushReplacement(
-                              new MaterialPageRoute(
-                                builder: (context) => new LoginPage(),
-                                fullscreenDialog: true,
-                                maintainState: false,
-                              ),
-                            );
-                          },
-                                  child: Padding(
-                    padding: const EdgeInsets.only(left:8.0,right: 24,bottom: 8),
-                    child: Icon(
-
-                      (MyFlutterApp.MyFlutterApp.logout),
-                      size: 40,
-                      color: Colors.red,
+              padding: const EdgeInsets.only(top: 20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  InkWell(
+                    onTap: () {
+                      print('tapped logout');
+                      Navigator.of(context).pushReplacement(
+                        new MaterialPageRoute(
+                          builder: (context) => new LoginPage(),
+                          fullscreenDialog: true,
+                          maintainState: false,
+                        ),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          left: 8.0, right: 24, bottom: 8),
+                      child: Icon(
+                        (MyFlutterApp.MyFlutterApp.logout),
+                        size: 40,
+                        color: Colors.red,
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
             Padding(
               padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
               child: new Card(
@@ -104,7 +104,6 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.all(8),
                   child: new Column(
                     children: <Widget>[
-                      
                       new Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
@@ -131,21 +130,38 @@ class _HomePageState extends State<HomePage> {
                           ),
                           new Expanded(
                             child: ListTile(
-                              title: Text(
-                                "Hello " + (_user?.firstname ?? "loading..."),
-                                style: new TextStyle(
-                                  fontSize: 24.0,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              subtitle: Text(
-                                "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
-                                style: new TextStyle(
-                                    fontSize: 14.0,
-                                    fontWeight: FontWeight.w400,
-                                    fontStyle: FontStyle.italic),
-                              ),
-                            ),
+                                title: _user != null
+                                    ? Text(
+                                        "Hello " + capitalize(_user?.firstname),
+                                        style: new TextStyle(
+                                          fontFamily: 'Pacifico',
+                                          fontSize: 21.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      )
+                                    : Text(
+                                        "Hello " + "loading...",
+                                        style: new TextStyle(
+                                          fontFamily: 'Pacifico',
+                                          fontSize: 24.0,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                subtitle: _user != null
+                                    ? Text(
+                                        "${capitalize(_user?.email)}\n${capitalize(_user?.role)}",
+                                        style: new TextStyle(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w400,
+                                            fontStyle: FontStyle.italic),
+                                      )
+                                    : Text(
+                                        "${"loading..."}\n${"loading..."}",
+                                        style: new TextStyle(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.w400,
+                                            fontStyle: FontStyle.italic),
+                                      )),
                           ),
                         ],
                       ),
@@ -175,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.lightGreen,
                         ),
                         child: new Text(
-                            "${_todayScanned != null ? _todayScanned : "x"}",
+                            "${_todayScanned != null ? _todayScanned : ""}",
                             // "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
                             style: new TextStyle(
                                 color: Colors.yellow,
@@ -196,10 +212,10 @@ class _HomePageState extends State<HomePage> {
                           color: Color(0xff32a05f),
                         ),
                         child: new Text(
-                            "${_atScanned != null ? _atScanned : "y"}",
+                            "${_atScanned != null ? _atScanned : ""}",
                             style: new TextStyle(
                                 fontFamily: 'Athletic',
-                                color: Colors.blue[100], 
+                                color: Colors.blue[100],
                                 fontSize:
                                     50.0)), // You can add a Icon instead of text also, like below.
                         //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
@@ -347,12 +363,11 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top:16.0),
+              padding: const EdgeInsets.only(top: 22.0),
               child: Container(
                 color: Color.fromRGBO(55, 230, 199, 1.0),
                 height: 50,
                 child: Row(
-                  
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
@@ -373,10 +388,8 @@ class _HomePageState extends State<HomePage> {
                   )*/
                   ],
                 ),
-                  ),
+              ),
             ),
-             
-            
           ],
         ),
       ),
@@ -530,7 +543,7 @@ class _HomePageState extends State<HomePage> {
         content: new Text('Unknown error occurred'),
       ));
     }
-  } 
+  }
 
   void workerCollects() {
     print('barcooooooode==' + barcode);
@@ -603,6 +616,8 @@ class _HomePageState extends State<HomePage> {
       ));
     }
   }
+
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }
 
 /*_showChangePassword() {

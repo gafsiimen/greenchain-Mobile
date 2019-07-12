@@ -83,12 +83,12 @@ List lessons;
           ),
           trailing:
               Icon(Icons.keyboard_arrow_right, color: Colors.blue, size: 30.0),
-          onTap: () {
+          /*onTap: () {
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (context) => DetailPage(lesson: lesson)));
-          },
+          },*/
         );
 
     Card makeCard(Lesson lesson) => Card(

@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:node_auth/CoachProfile.dart';
 import 'package:node_auth/MenuProfilePage.dart';
-import 'package:node_auth/TrieursPage.dart';
 import 'package:node_auth/MenuTrieursPage.dart';
 import 'package:node_auth/custom/custom_text.dart';
 import 'package:node_auth/custom/trapezoid_container.dart';
 import 'package:node_auth/main.dart';
 import 'package:node_auth/api_service.dart';
-import 'package:http/http.dart' as http;
 
 final Color backgroundColor = Color(0xFF4A4A58);
 var darkGreenColor = Color(0xff279152);
@@ -110,14 +107,22 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                           Icon(Icons.person_outline,
                               color: Colors.white, size: 30.0),
                           SizedBox(width: 10.0),
+                          _user!=null ?
                           Text(
-                            _user?.firstname ?? "",
+                            capitalize(_user?.firstname),
                             style: TextStyle(
                                 fontFamily: 'pacifico',
                                 color: Colors.white,
                                 fontSize: 22.0,
                                 fontWeight: FontWeight.w500),
-                          )
+                          ): Text(
+                            "",
+                            style: TextStyle(
+                                fontFamily: 'pacifico',
+                                color: Colors.white,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ),
@@ -374,28 +379,29 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                     BorderRadius.all(Radius.circular(40)),
                                 color: Colors.blue,
                               ),
-                              child: _points!=null ?
-                              new Text(_points.total_available.toString(),
-                                  textAlign: TextAlign.center,
-                                  style: new TextStyle(
-                                      color: Colors.greenAccent,
-                                      fontFamily: 'Athletic',
-                                      fontSize: 40.0)):
-                                                                    new Text('',
-                                  textAlign: TextAlign.center,
-                                  style: new TextStyle(
-                                      color: Colors.greenAccent,
-                                      fontFamily: 'Athletic',
-                                      fontSize: 40.0)),
-
+                              child: _points != null
+                                  ? new Text(_points.total_available.toString(),
+                                      textAlign: TextAlign.center,
+                                      style: new TextStyle(
+                                          color: Colors.greenAccent,
+                                          fontFamily: 'Athletic',
+                                          fontSize: 40.0))
+                                  : new Text('',
+                                      textAlign: TextAlign.center,
+                                      style: new TextStyle(
+                                          color: Colors.greenAccent,
+                                          fontFamily: 'Athletic',
+                                          fontSize: 40.0)),
                             ),
                             title: CustomText.text(
                                 text: "GP disponibles", size: 22),
-                            subtitle: _points!=null ?
-                             CustomText.text(
-                                text: _points.total_pending.toString() +" GP en attente", size: 16) : 
-                                CustomText.text(
-                                text: "   GP en attente", size: 16)),
+                            subtitle: _points != null
+                                ? CustomText.text(
+                                    text: _points.total_pending.toString() +
+                                        " GP en attente",
+                                    size: 16)
+                                : CustomText.text(
+                                    text: "   GP en attente", size: 16)),
                       )),
                 ),
                 Text(
@@ -511,13 +517,15 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                                             .toString(),
                                         textAlign: TextAlign.center,
                                         style: new TextStyle(
-                                    color: Color.fromRGBO(239, 123, 175, 1),
+                                            color: Color.fromRGBO(
+                                                239, 123, 175, 1),
                                             fontFamily: 'Athletic',
                                             fontSize: 30.0))
                                     : Text('',
                                         textAlign: TextAlign.center,
                                         style: new TextStyle(
-                                    color: Color.fromRGBO(239, 123, 175, 1),
+                                            color: Color.fromRGBO(
+                                                239, 123, 175, 1),
                                             fontFamily: 'Athletic',
                                             fontSize: 30.0)),
                               ),
@@ -557,19 +565,21 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
-                                  child: _sacs != null
-                                      ? Text(_sacs?.delivered.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                  color: Color.fromRGBO(253, 187, 59, 1),
-                                              fontFamily: 'Athletic',
-                                              fontSize: 30.0))
-                                      : Text('',
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                  color: Color.fromRGBO(253, 187, 59, 1),
-                                              fontFamily: 'Athletic',
-                                              fontSize: 30.0)),
+                                child: _sacs != null
+                                    ? Text(_sacs?.delivered.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            color:
+                                                Color.fromRGBO(253, 187, 59, 1),
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0))
+                                    : Text('',
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            color:
+                                                Color.fromRGBO(253, 187, 59, 1),
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0)),
                               ),
                             ),
                             SizedBox(
@@ -616,19 +626,20 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                               ),
                               child: Padding(
                                 padding: const EdgeInsets.only(top: 15.0),
-                                  child: _sacs != null
-                                      ? Text(_sacs?.confirmedNotDelivered.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                  color: Colors.green[700],
-                                              fontFamily: 'Athletic',
-                                              fontSize: 30.0))
-                                      : Text('',
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                  color: Colors.green[700],
-                                              fontFamily: 'Athletic',
-                                              fontSize: 30.0)),
+                                child: _sacs != null
+                                    ? Text(
+                                        _sacs?.confirmedNotDelivered.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            color: Colors.green[700],
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0))
+                                    : Text('',
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            color: Colors.green[700],
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0)),
                               ),
                             ),
                             SizedBox(
@@ -698,7 +709,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     }
   }
 
-    getCoachPoints() async {
+  getCoachPoints() async {
     try {
       final points = await _apiService.coachPoints(_token);
       setState(() {
@@ -717,4 +728,5 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     }
   }
 
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }

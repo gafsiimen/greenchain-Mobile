@@ -23,12 +23,17 @@ class User {
   final int id;
   final String firstname;
   final String lastname;
-  //final DateTime createdAt;
- final String avatar;
+  final String avatar;
   final String email;
   final String role;
+  final String tel;
+  final String city;
+  final int zip;
+  final String address;
+  final int percentage;
 
-  User({this.id,this.firstname,this.lastname,this.email,this.role,this.avatar});
+  User({this.id,this.firstname,this.lastname,this.email,this.role,
+  this.tel,this.avatar,this.address,this.city,this.zip,this.percentage });
   
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -36,8 +41,12 @@ class User {
         lastname = json['lastname'],
         email = json['email'],
         role = json['role'],
-        avatar=json['avatar'];
-
+        tel = json['tel'],
+        avatar=json['avatar'],
+        city=json['addresses'][0]['city'],
+        zip=json['addresses'][0]['zip'],
+        address=json['addresses'][0]['primary_address'],
+        percentage=json['percentage'];
         /*createdAt = DateTime.tryParse(json['created_at']) ?? new DateTime.now(),*/
         /* @override
       String toString() => '$name, $email, $imageUrl';*/ 
@@ -100,8 +109,6 @@ class MyHttpException extends HttpException {
 }
 
   class Sac {
-  //int code;
-  //final String error;
   final bool success;
   final int empty;
   final int selfScanned;
@@ -117,8 +124,6 @@ class MyHttpException extends HttpException {
 
   factory Sac.fromJson(Map<String, dynamic> json) {
     return Sac(
-      //code: json['code'],
-      //error: json['error'],
       success: json['success'],
       empty: json['empty'],
       selfScanned: json['SelfScanned'],
@@ -152,6 +157,29 @@ class MyHttpException extends HttpException {
     );
   }
 }
+
+  class TStats {
+  //int code;
+  //final String error;
+  final bool success;
+  final int distributed;
+  final int collected;
+
+
+  TStats({this.success, this.distributed,this.collected
+ 
+  });
+
+  factory TStats.fromJson(Map<String, dynamic> json) {
+    return TStats(
+      success: json['success'],
+      distributed: json['distributed'],
+      collected: json['collected'],
+    );
+  }
+}
+
+
 
 
 class ApiService {
@@ -294,6 +322,37 @@ Future<WStat> workerNumbers(String token) async {
     
     return (data.toString());
   }
+
+    Future<List<User>> coachTrieurs(String token) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/mytrieurs');
+
+    http.Response response = await get(url,token);
+    print("Response Body: "+ response.body);   
+    var resBody = json.decode(response.body);
+    var data= resBody["data"];
+    //print("trieurs  = "+ data.toString());
+    List<User> trieurs = [];
+    //Trieur trieur = Trieur.fromJson(json.decode(data));
+
+    for (var bookval in data) {
+      User trieur = User.fromJson(bookval);
+      trieurs.add(trieur);
+    }
+    return trieurs;
+  
+  }
+
+    Future<TStats> trieurdistributedcollected(String token,int id) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/trieurStats/$id');
+
+    http.Response response = await put(url,token);
+    print("Response Body: "+ response.body);   
+    TStats tStats = TStats.fromJson(json.decode(response.body));
+    print(tStats);    
+    
+    return tStats;
+  }
+
 
 
 

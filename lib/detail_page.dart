@@ -1,20 +1,44 @@
 import 'package:flutter/cupertino.dart';
-import 'package:node_auth/lesson.dart';
 import 'package:flutter/material.dart';
+import 'package:node_auth/api_service.dart';
 
-class DetailPage extends StatelessWidget {
-  final Lesson lesson;
-  DetailPage({Key key, this.lesson}) : super(key: key);
+class DetailPage extends StatefulWidget {
+  final User trieur;
+  final String token;
+
+  DetailPage(this.trieur, this.token);
+
+  @override
+  _DetailPageState createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  String _token;
+  ApiService _apiService;
+  User _user;
+  TStats _stats;
+  final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _token = widget.token;
+    _user = widget.trieur;
+    _apiService = new ApiService();
+
+    getTrieurStats();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final levelIndicator = Container(
+    /*final levelIndicator = Container(
       child: Container(
         child: LinearProgressIndicator(
             backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
-            value: lesson.indicatorValue,
+            value: user.indicatorValue,
             valueColor: AlwaysStoppedAnimation(Colors.green)),
       ),
-    );
+    );*/
 
     final coursePrice = Container(
       height: 110,
@@ -42,25 +66,34 @@ class DetailPage extends StatelessWidget {
           ),
           SizedBox(height: 5.0),
           new Text(
-            "Email : mohamedsedkipro@gmail.com",
+            "Email : " +
+                _user.email[0].toUpperCase() +
+                _user.email.substring(1),
             style: TextStyle(color: Colors.white, letterSpacing: 0.5),
           ),
           SizedBox(height: 10.0),
 
           /* new Text(
-      "\$" + lesson.price.toString(),
+      "\$" + user.price.toString(),
       style: TextStyle(color: Colors.white),
             ),*/
 
           new Text(
-            "Adresse :" + " Avenue 1er mars 5180 abidjan",
+            "Adresse : " +
+                _user.address[0].toUpperCase() +
+                _user.address.substring(1) +
+                " " +
+                _user.zip.toString() +
+                " " +
+                _user.city[0].toUpperCase() +
+                _user.city.substring(1),
             style: TextStyle(color: Colors.white, letterSpacing: 0.5),
           ),
           SizedBox(height: 10.0),
           Align(
             alignment: Alignment.bottomRight,
             child: new Text(
-              "Tel :" + " 52116170",
+              "Tel :" + _user.tel,
               style: TextStyle(color: Colors.white, letterSpacing: 2),
             ),
           ),
@@ -80,16 +113,27 @@ class DetailPage extends StatelessWidget {
 
         Column(
           children: <Widget>[
-            Image.asset(
-              'assets/no-avatar.png',
-              height: 150,
-              width: 160,
-            ),
+            _user?.avatar != null
+                ? Image.network(
+                    ("http://192.168.1.101:8000/" + _user?.avatar),
+                    fit: BoxFit.contain,
+                    width: 160.0,
+                    height: 150.0,
+                  )
+                : new Image.asset(
+                    'assets/no-avatar.png',
+                    width: 160.0,
+                    height: 150.0,
+                  ),
           ],
         ),
         SizedBox(height: 10.0),
         Text(
-          lesson.title,
+          _user.firstname[0].toUpperCase() +
+              _user.firstname.substring(1) +
+              ' ' +
+              _user.lastname[0].toUpperCase() +
+              _user.lastname.substring(1),
           style: TextStyle(color: Colors.white, fontSize: 20.0),
         ),
         //SizedBox(height: 10.0),
@@ -108,7 +152,7 @@ class DetailPage extends StatelessWidget {
                 child: Padding(
                     padding: EdgeInsets.only(left: 10.0),
                     child: Text(
-                      lesson.level,
+                      user.level,
                       style: TextStyle(color: Colors.white),
                     ))),*/
             Expanded(flex: 1, child: coursePrice)
@@ -326,25 +370,32 @@ class DetailPage extends StatelessWidget {
                       height: 55,
                     ),
                     Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(40)),
-                          border: Border.all(
-                            width: 5,
-                            color: Color.fromRGBO(55, 230, 199, 1.0),
-                          )),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 15.0),
-                        child: new Text('250',
-                            textAlign: TextAlign.center,
-                            style: new TextStyle(
-                                color: Color.fromRGBO(55, 230, 199, 1.0),
-                                fontFamily: 'Athletic',
-                                fontSize: 30.0)),
-                      ),
-                    )
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(40)),
+                            border: Border.all(
+                              width: 5,
+                              color: Color.fromRGBO(55, 230, 199, 1.0),
+                            )),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: _stats != null
+                              ? Text(_stats?.distributed.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: new TextStyle(
+                                      color: Color.fromRGBO(132, 140, 255, 1),
+                                      fontFamily: 'Athletic',
+                                      fontSize: 30.0))
+                              : Text('',
+                                  textAlign: TextAlign.center,
+                                  style: new TextStyle(
+                                      color: Color.fromRGBO(132, 140, 255, 1),
+                                      fontFamily: 'Athletic',
+                                      fontSize: 30.0)),
+                        )),
+
                     /*Text(
                       'Trieurs',
                       style: TextStyle(
@@ -359,40 +410,42 @@ class DetailPage extends StatelessWidget {
                 width: MediaQuery.of(context).size.width / 2 - 35,
                 decoration: BoxDecoration(
                   image: new DecorationImage(
-                    fit: BoxFit.fill, 
-                    
+                    fit: BoxFit.fill,
                     image: new AssetImage('assets/full.png'),
                   ),
                 ),
-
-                
-
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    SizedBox(height: 55,),
+                    SizedBox(
+                      height: 55,
+                    ),
                     Container(
-                              width: 80,
-                              height: 80,
-                              
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40)),
-                                  border: Border.all(
-                                    width: 5,
-                                    color: Color.fromRGBO(55, 230, 199, 1.0),
-                                  )),
-                              child: Padding(
-                                padding: const EdgeInsets.only(top: 15.0),
-                                child: new Text('250',
-                                    textAlign: TextAlign.center,
-                                    style: new TextStyle(
-                                        color: Color.fromRGBO(55, 230, 199, 1.0),
-                                        fontFamily: 'Athletic',
-                                        fontSize: 30.0)),
-                              ),
-                            )
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(40)),
+                            border: Border.all(
+                              width: 5,
+                              color: Color.fromRGBO(55, 230, 199, 1.0),
+                            )),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 15.0),
+                          child: _stats != null
+                              ? Text(_stats?.collected.toString(),
+                                  textAlign: TextAlign.center,
+                                  style: new TextStyle(
+                                      color: Color.fromRGBO(132, 140, 255, 1),
+                                      fontFamily: 'Athletic',
+                                      fontSize: 30.0))
+                              : Text('',
+                                  textAlign: TextAlign.center,
+                                  style: new TextStyle(
+                                      color: Color.fromRGBO(132, 140, 255, 1),
+                                      fontFamily: 'Athletic',
+                                      fontSize: 30.0)),
+                        )),
                     /*Text(
                       'Trieurs',
                       style: TextStyle(
@@ -424,5 +477,25 @@ class DetailPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  getTrieurStats() async {
+    try {
+      final stats =
+          await _apiService.trieurdistributedcollected(_token, _user.id);
+      setState(() {
+        _stats = stats;
+
+        debugPrint("points= $stats");
+      });
+    } on MyHttpException catch (e) {
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(e.message)),
+      );
+    } catch (e) {
+      _scaffoldKey.currentState.showSnackBar(new SnackBar(
+        content: new Text('Unknown error occurred'),
+      ));
+    }
   }
 }

@@ -116,14 +116,22 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                           Icon(Icons.person_outline,
                               color: Colors.white, size: 30.0),
                           SizedBox(width: 10.0),
+                          _user!=null ?
                           Text(
-                            _user?.firstname ?? "",
+                            capitalize(_user?.firstname),
                             style: TextStyle(
                                 fontFamily: 'pacifico',
                                 color: Colors.white,
                                 fontSize: 22.0,
                                 fontWeight: FontWeight.w500),
-                          )
+                          ): Text(
+                            "",
+                            style: TextStyle(
+                                fontFamily: 'pacifico',
+                                color: Colors.white,
+                                fontSize: 22.0,
+                                fontWeight: FontWeight.w500),
+                          ),
                         ],
                       ),
                     ),
@@ -369,23 +377,43 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                       ),
                                       new Expanded(
                                         child: ListTile(
-                                          title: Text(
+                                          
+                                          title: 
+                                            _user!=null ?
+                                          Text(
                                             "Hello " +
-                                                (_user?.firstname ??
-                                                    "loading..."),
+                                               capitalize(_user?.firstname),
+
+                                                   
                                             style: new TextStyle(
                                               fontFamily: 'Pacifico',
                                               fontSize: 24.0,
                                               fontWeight: FontWeight.w600,
                                             ),
-                                          ),
-                                          subtitle: Text(
-                                            "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
+                                          ):Text(
+                                            "Hello " +
+                                               "loading...",                                                   
+                                            style: new TextStyle(
+                                              fontFamily: 'Pacifico',
+                                              fontSize: 24.0,
+                                              fontWeight: FontWeight.w600,
+                                            ),
+                                           ),
+                                          subtitle: 
+                                          _user!=null ?
+                                          Text(
+                                            "${capitalize(_user?.email)}\n${capitalize(_user?.role)}",
                                             style: new TextStyle(
                                                 fontSize: 14.0,
                                                 fontWeight: FontWeight.w400,
                                                 fontStyle: FontStyle.italic),
-                                          ),
+                                          ):Text(
+                                            "${"loading..."}\n${"loading..."}",
+                                            style: new TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.w400,
+                                                fontStyle: FontStyle.italic),
+                                          )
                                         ),
                                       ),
                                     ],
@@ -537,23 +565,21 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    _trieursNumber!=null ?
-                                      
-                                      Text( 
-                                      '$_trieursNumber',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 42.0),
-                                    ) : Text( 
-                                      '',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 42.0),
-                                    ),
-                                    
-                                    
+                                    _trieursNumber != null
+                                        ? Text(
+                                            '$_trieursNumber',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 42.0),
+                                          )
+                                        : Text(
+                                            '',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 42.0),
+                                          ),
                                   ],
                                 ),
                                 Text(
@@ -579,21 +605,21 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    _filleulsNumber!=null ?
-                                      
-                                      Text( 
-                                      '$_filleulsNumber',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 42.0),
-                                    ) : Text( 
-                                      '',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 42.0),
-                                    ),
+                                    _filleulsNumber != null
+                                        ? Text(
+                                            '$_filleulsNumber',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 42.0),
+                                          )
+                                        : Text(
+                                            '',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 42.0),
+                                          ),
                                   ],
                                 ),
                                 Text(
@@ -731,13 +757,13 @@ class _MenuProfilePageState extends State<MenuProfilePage>
           }
           break;
 
-          case 409:
+        case 409:
           {
             message = 'Veuillez remettre le sac au propre Coach';
           }
           break;
 
-          case 412:
+        case 412:
           {
             message = 'Sac déja confirmé';
           }
@@ -814,4 +840,6 @@ class _MenuProfilePageState extends State<MenuProfilePage>
       ));
     }
   }
+    String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
+
 }
