@@ -223,14 +223,18 @@ class ApiService {
   Future<Login> signIn(String email, String password) async {
       String url = Uri.encodeFull('http://192.168.1.101:8000/api/auth/Mlogin');
       var body = {"email": email, "password": password};
+      try{
       http.Response response = await post(url,body);
+      
       print("Response: "+ response.toString());
       print("Response Body: "+ response.body);
       
       Login login = Login.fromJson(json.decode(response.body));
       login.code=response.statusCode;
       return login;      
-  
+  } on SocketException catch (_) {
+  print('not connected'); 
+      }
   } 
   
   Future<User> getUserProfile(String token) async {
@@ -266,6 +270,17 @@ class ApiService {
     
     return response;
   }
+
+        Future<http.Response> coachAssigns(String token,String barcode,int id) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coachs/sacs/assign_sac_trieur/$barcode');
+
+    http.Response response = await put2(url,token,id);
+    print("Response Body: "+ response.body);    
+  
+    
+    return response;
+  }
+
 
 Future<WStat> workerNumbers(String token) async {
     String url = Uri.encodeFull('http://192.168.1.101:8000/api/worker/MySacsNumbers');

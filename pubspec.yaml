@@ -13,6 +13,7 @@ dependencies:
   path: "^1.5.1"
   http: ^0.12.0
   flutter_stetho: ^0.2.2
+  barcode_scan : "^0.0.4"
   
 
 

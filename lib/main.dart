@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:node_auth/CoachProfile.dart';
@@ -269,14 +270,14 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _formKey.currentState.save();
     _loginButtonController.reset();
     _loginButtonController.forward();
-
+try{
     apiService.signIn(_email, _password).then((Login login) {
       print('shit works');
       _loginButtonController.reset();
       //print(response);
       /*_loginButtonController.reverse();*/
 
-      if (login.code == 200) {
+      if (login.code == 200) { 
         if (login.role == 'worker') {
           Navigator.of(context).pushReplacement(
             new MaterialPageRoute(
@@ -327,8 +328,15 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
           new SnackBar(content: new Text(message)),
         );
       }
+    }
+    );} on SocketException catch (e) {
+  print('not connected'); 
+ _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(content: new Text('not connected')),
+        );
       _loginButtonController.reset();
-    });
+    }
+
   }
 
   _resetPassword() {

@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
-//import 'dart:math';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:node_auth/HistoriquePage.dart';
+
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
 import 'package:flutter/material.dart';
-//import 'package:image/image.dart' as prefix0;
+import 'package:flutter/services.dart';
 import 'package:node_auth/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:node_auth/main.dart';
@@ -24,6 +26,7 @@ class _HomePageState extends State<HomePage> {
   String _token, barcode;
   int _atScanned, _todayScanned;
   User _user;
+  String message;
 
   ApiService _apiService;
   static const String barcodeRegExpString = r'^[0-9]{13}$';
@@ -309,8 +312,9 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.only(top: 12),
                             child: FlatButton(
                               onPressed: () {
-                                print('Scan barcode');
+                                barcodeScanning();
                               },
+
                               child: Image.asset('assets/scan-barcode.png',
                                   width: 150, height: 116),
                             ),
@@ -372,8 +376,20 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Icon(Icons.home, color: Colors.black, size: 30),
-                    Icon(Icons.blur_on, color: Colors.black, size: 30),
-
+                    IconButton(
+                      icon: Icon(Icons.blur_on, color: Colors.black, size: 30),
+                        onPressed: () {
+                            print('tapped Scanner');
+                            Navigator.of(context).pushReplacement(
+                              new MaterialPageRoute(
+                                builder: (context) =>
+                                    new HistoriquePage(_token),
+                                fullscreenDialog: true,
+                                maintainState: false,
+                              ),
+                            );
+                          },
+                    ),
                     /*IconButton(
                     icon: Icon(Icons.blur_on, color: Colors.white),
                     onPressed: () {},
@@ -433,7 +449,7 @@ class _HomePageState extends State<HomePage> {
           false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter le code à barre'),
+          title: Text('Entrer le code à barre'),
           content: new Row(
             children: <Widget>[
               new Expanded(
@@ -491,40 +507,136 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /* new Container(
-              height: 48.0,
-              margin: new EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
-              width: double.infinity,
-              child: new RaisedButton.icon(
-                onPressed: () {
-                 // _showChangePassword();
-                },
-                label: new Text('Change password'),
-                icon: new Icon(Icons.lock_outline),
-                color: Theme.of(context).backgroundColor,
-                colorBrightness: Brightness.dark,
-                splashColor: Colors.white.withOpacity(0.5),
+
+
+    Future<String> _confirmationPopUp(BuildContext context) async {
+    //String barcode = '';
+    return showDialog<String>(
+      context: context,
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Voulez vous confirmer le sac de ce code à barre ?',
+          textAlign: TextAlign.center,),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: Text(barcode,
+                textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontSize: 25.0,
+                                fontFamily: 'Athletic',
+                                //fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                
+                
+                ),
               ),
-            ),*/
-  /*new Container(
-              height: 48.0,
-              margin: new EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
-              width: double.infinity,
-              child: new RaisedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                    new MaterialPageRoute(builder: (BuildContext context) {
-                     // return new LoginPage();
-                    }),
-                  );
-                },
-                label: new Text('Logout'),
-                icon: new Icon(Icons.exit_to_app),
-                color: Theme.of(context).backgroundColor,
-                colorBrightness: Brightness.dark,
-                splashColor: Colors.white.withOpacity(0.5),
               ),
-            ),*/
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              color: Colors.lightGreen,
+              child: new Text('Confirm', style: TextStyle(color: Colors.red)),
+              onPressed: () {               
+               
+                print('jalaaaaaaaaaaaal' + barcode);
+                Navigator.of(context).pop(barcode);
+                workerCollects();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+bool _isNumeric(String str) {
+    if(str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
+
+// Method for scanning barcode....
+  Future barcodeScanning() async {
+
+    try {
+      String barcode = await BarcodeScanner.scan();
+      if ((barcode.length==13) && (_isNumeric(barcode)))
+      {
+      setState(() => this.barcode = barcode);
+      _confirmationPopUp(context);
+ }
+      else {
+      setState(() => this.message = 'Invalid barcode content');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.red,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,))),
+      );
+      
+      }
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() =>
+          this.message = 'No camera permission!' );
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.red,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,))),
+      );
+        
+      } else {
+        setState(() => this.message = 'Unknown error: $e');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.red,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,))),
+      );
+      }
+    } on FormatException {
+      setState(() => this.message = 'Nothing captured.');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.red,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,))),
+      );
+      
+    } catch (e) {
+      setState(() => this.message = 'Unknown error: $e');
+           _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.red,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,))),
+      );
+
+    }
+  }
 
   getUserInformation() async {
     try {
@@ -550,6 +662,7 @@ class _HomePageState extends State<HomePage> {
     _apiService.workerCollects(_token, barcode).then((http.Response response) {
       print('I guess shit works');
       print('statuuuuuuuuuuus==' + response.statusCode.toString());
+      barcode='';
       String message = '';
       switch (response.statusCode) {
         case 404:

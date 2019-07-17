@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:node_auth/api_service.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 class DetailPage extends StatefulWidget {
   final User trieur;
@@ -13,7 +16,8 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  String _token;
+  String _token, barcode;
+  String message;
   ApiService _apiService;
   User _user;
   TStats _stats;
@@ -217,8 +221,8 @@ class _DetailPageState extends State<DetailPage> {
                     padding: const EdgeInsets.only(top: 8),
                     child: FlatButton(
                       onPressed: () {
-                        print('enter barcode');
-                        //_asyncInputDialog(context);
+                        print('Assign sac');
+                        barcodeScanning('assign');
                       },
                       child: Image.asset('assets/scan-barcode.png',
                           width: 150, height: 125),
@@ -232,7 +236,8 @@ class _DetailPageState extends State<DetailPage> {
                     padding: const EdgeInsets.only(top: 8),
                     child: FlatButton(
                       onPressed: () {
-                        print('Scan barcode');
+                        print('collect sac');
+                        barcodeScanning('collect');
                       },
                       child: Image.asset('assets/scan-barcode.png',
                           width: 150, height: 125),
@@ -470,6 +475,7 @@ class _DetailPageState extends State<DetailPage> {
     );
 
     return Scaffold(
+      key: _scaffoldKey,
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
@@ -477,6 +483,323 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
     );
+  }
+
+  Future<String> _confirmationPopUp(BuildContext context, type) async {
+    var firstname = this._user.firstname;
+    var text;
+    if (type == 'collect')
+      text = 'Voulez vous collecter le sac de ce code à barre depuis ' +
+          firstname +
+          ' ?';
+    else
+      text = 'Voulez vous assigner le sac de ce code à barre à ' +
+          firstname +
+          ' ?';
+    return showDialog<String>(
+      context: context,
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            text,
+            textAlign: TextAlign.center,
+          ),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: Text(
+                  barcode,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.black,
+                    fontSize: 25.0,
+                    fontFamily: 'Athletic',
+                    //fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+                color: Colors.lightGreen,
+                child: new Text('Confirm', style: TextStyle(color: Colors.red)),
+                onPressed: () {
+                  print('jalaaaaaaaaaaaal' + barcode);
+                  Navigator.of(context).pop(barcode);
+                  if (type == 'collect') {
+                    coachCollects();
+                  } else
+                    coachAssigns();
+                }),
+          ],
+        );
+      },
+    );
+  }
+
+  bool _isNumeric(String str) {
+    if (str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
+
+// Method for scanning barcode....
+  Future barcodeScanning(type) async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      if ((barcode.length == 13) && (_isNumeric(barcode))) {
+        setState(() => this.barcode = barcode);
+        _confirmationPopUp(context, type);
+      } else {
+        setState(() => this.message = 'Invalid barcode content');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
+      }
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() => this.message = 'No camera permission!');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
+      } else {
+        setState(() => this.message = 'Unknown error: $e');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
+      }
+    } on FormatException {
+      setState(() => this.message = 'Nothing captured.');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+            content: new Text(message,
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  color: Colors.red,
+                  fontSize: 20.0,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold,
+                ))),
+      );
+    } catch (e) {
+      setState(() => this.message = 'Unknown error: $e');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+            content: new Text(message,
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  color: Colors.red,
+                  fontSize: 20.0,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold,
+                ))),
+      );
+    }
+  }
+
+  void coachCollects() {
+    print('barcooooooode==' + barcode);
+    print(_user.id);
+    _apiService
+        .coachCollects(_token, barcode, _user.id)
+        .then((http.Response response) {
+      print('I guess shit works');
+      print('statuuuuuuuuuuus==' + response.statusCode.toString());
+      String message = '';
+      switch (response.statusCode) {
+        case 404:
+          {
+            message = 'code à barre invalide';
+          }
+          break;
+
+        case 401:
+          {
+            message = 'Vous n\'etes pas autorisé';
+          }
+          break;
+        case 403:
+          {
+            message = 'Mais le sac déja affecté !';
+          }
+          break;
+
+        case 409:
+          {
+            message = 'Veuillez remettre le sac au propre Coach';
+          }
+          break;
+
+        case 412:
+          {
+            message = 'Sac déja confirmé';
+          }
+          break;
+        case 200:
+          {
+            message = 'Félicitation le sac à été bien confirmé';
+          }
+          break;
+        default:
+          {
+            message = 'Erreur inconnue';
+          }
+          break;
+      }
+      if (response.statusCode == 200) {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            content: new Text(
+              message,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.green,
+                fontSize: 20.0,
+                fontFamily: 'Ubuntu',
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      } else {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            content: new Text(
+              message,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.red,
+                fontSize: 20.0,
+                fontFamily: 'Ubuntu',
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      }
+    });
+  }
+
+  void coachAssigns() {
+    print('barcooooooode==' + barcode);
+    print(_user.id);
+    _apiService
+        .coachAssigns(_token, barcode, _user.id)
+        .then((http.Response response) {
+      print('I guess shit works');
+      print('statuuuuuuuuuuus==' + response.statusCode.toString());
+      String message = '';
+      switch (response.statusCode) {
+        case 404:
+          {
+            message = 'code à barre invalide';
+          }
+          break;
+
+        case 401:
+          {
+            message = 'Vous n\'etes pas autorisé';
+          }
+          break;
+        case 403:
+          {
+            message = 'Mais le sac est déja assigné';
+          }
+          break;
+
+        case 409:
+          {
+            message = 'Veuillez remettre le sac au propre Coach';
+          }
+          break;
+
+        case 412:
+          {
+            message = 'Sac non vide';
+          }
+          break;
+        case 200:
+          {
+            message = 'Félicitation le sac à été bien assigné';
+          }
+          break;
+        default:
+          {
+            message = 'Erreur inconnue';
+          }
+          break;
+      }
+      if (response.statusCode == 200) {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            content: new Text(
+              message,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.green,
+                fontSize: 20.0,
+                fontFamily: 'Ubuntu',
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      } else {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            content: new Text(
+              message,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.red,
+                fontSize: 20.0,
+                fontFamily: 'Ubuntu',
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      }
+    });
   }
 
   getTrieurStats() async {

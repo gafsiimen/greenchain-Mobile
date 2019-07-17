@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:node_auth/MenuDashboardPage.dart';
-import 'package:node_auth/MenuProfilePage.dart';
+
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:node_auth/scan.dart';
+import 'package:flutter/services.dart';
+
 import 'package:node_auth/MenuTrieursPage.dart';
 import 'package:node_auth/main.dart';
 import 'package:node_auth/api_service.dart';
@@ -27,6 +31,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
   Animation<double> _menuScaleAnimation;
   Animation<Offset> _slideAnimation;
   String _token, barcode;
+  String message;
 
   BorderRadius _borderRadius = BorderRadius.all(Radius.zero);
   var greenColor = Color(0xff32a05f);
@@ -116,22 +121,23 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                           Icon(Icons.person_outline,
                               color: Colors.white, size: 30.0),
                           SizedBox(width: 10.0),
-                          _user!=null ?
-                          Text(
-                            capitalize(_user?.firstname),
-                            style: TextStyle(
-                                fontFamily: 'pacifico',
-                                color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w500),
-                          ): Text(
-                            "",
-                            style: TextStyle(
-                                fontFamily: 'pacifico',
-                                color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          _user != null
+                              ? Text(
+                                  capitalize(_user?.firstname),
+                                  style: TextStyle(
+                                      fontFamily: 'pacifico',
+                                      color: Colors.white,
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              : Text(
+                                  "",
+                                  style: TextStyle(
+                                      fontFamily: 'pacifico',
+                                      color: Colors.white,
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.w500),
+                                ),
                         ],
                       ),
                     ),
@@ -280,7 +286,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
       top: 0,
       bottom: 0,
       left: isCollapsed ? 0 : 0.60 * screenWidth,
-      right: isCollapsed ? 0 : -0.4 * screenWidth,
+      right: isCollapsed ? 0 : -0.6 * screenWidth,
       child: ScaleTransition(
         scale: _scaleAnimation,
         child: Material(
@@ -377,44 +383,46 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                       ),
                                       new Expanded(
                                         child: ListTile(
-                                          
-                                          title: 
-                                            _user!=null ?
-                                          Text(
-                                            "Hello " +
-                                               capitalize(_user?.firstname),
-
-                                                   
-                                            style: new TextStyle(
-                                              fontFamily: 'Pacifico',
-                                              fontSize: 24.0,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                          ):Text(
-                                            "Hello " +
-                                               "loading...",                                                   
-                                            style: new TextStyle(
-                                              fontFamily: 'Pacifico',
-                                              fontSize: 24.0,
-                                              fontWeight: FontWeight.w600,
-                                            ),
-                                           ),
-                                          subtitle: 
-                                          _user!=null ?
-                                          Text(
-                                            "${capitalize(_user?.email)}\n${capitalize(_user?.role)}",
-                                            style: new TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.italic),
-                                          ):Text(
-                                            "${"loading..."}\n${"loading..."}",
-                                            style: new TextStyle(
-                                                fontSize: 14.0,
-                                                fontWeight: FontWeight.w400,
-                                                fontStyle: FontStyle.italic),
-                                          )
-                                        ),
+                                            title: _user != null
+                                                ? Text(
+                                                    "Hello " +
+                                                        capitalize(
+                                                            _user?.firstname),
+                                                    style: new TextStyle(
+                                                      fontFamily: 'Pacifico',
+                                                      fontSize: 24.0,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  )
+                                                : Text(
+                                                    "Hello " + "loading...",
+                                                    style: new TextStyle(
+                                                      fontFamily: 'Pacifico',
+                                                      fontSize: 24.0,
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                    ),
+                                                  ),
+                                            subtitle: _user != null
+                                                ? Text(
+                                                    "${capitalize(_user?.email)}\n${capitalize(_user?.role)}",
+                                                    style: new TextStyle(
+                                                        fontSize: 14.0,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontStyle:
+                                                            FontStyle.italic),
+                                                  )
+                                                : Text(
+                                                    "${"loading..."}\n${"loading..."}",
+                                                    style: new TextStyle(
+                                                        fontSize: 14.0,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        fontStyle:
+                                                            FontStyle.italic),
+                                                  )),
                                       ),
                                     ],
                                   ),
@@ -423,12 +431,16 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                             ),
                           ),
                         ),
-                        SizedBox(height: 12.0),
-                        /*Text(
-              '10" Nursery Pot',
-              style: TextStyle(color: Colors.black45),
-            ),*/
-                        SizedBox(height: 12.0),
+                        SizedBox(height: 16.0),
+                    Text('Confirmer les sacs que j\'ai trié moi même',
+                    textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Pacifico',
+                                  
+                                  color: Colors.orange,
+                                  //fontWeight: FontWeight.bold,
+                                  fontSize: 20.0)),
+                        //SizedBox(height: 12.0),
                         new Center(
                           // texts
                           child: new Padding(
@@ -463,7 +475,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
                                         padding: const EdgeInsets.only(top: 12),
                                         child: FlatButton(
                                           onPressed: () {
-                                            print('Scan barcode');
+                                            barcodeScanning();
                                           },
                                           child: Image.asset(
                                               'assets/scan-barcode.png',
@@ -652,7 +664,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
           false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Enter le code à barre'),
+          title: Text('Entrer le code à barre du sac que vous avez trié'),
           content: new Row(
             children: <Widget>[
               new Expanded(
@@ -709,6 +721,142 @@ class _MenuProfilePageState extends State<MenuProfilePage>
         );
       },
     );
+  }
+
+  Future<String> _confirmationPopUp(BuildContext context) async {
+    //String barcode = '';
+    return showDialog<String>(
+      context: context,
+      barrierDismissible:
+          false, // dialog is dismissible with a tap on the barrier
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+            'Voulez vous confirmer le sac trié par vous même ?',
+            textAlign: TextAlign.center,
+          ),
+          content: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: Text(
+                  barcode,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.black,
+                    fontSize: 25.0,
+                    fontFamily: 'Athletic',
+                    //fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            new FlatButton(
+              child: new Text('CANCEL'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            new FlatButton(
+              color: Colors.lightGreen,
+              child: new Text('Confirm', style: TextStyle(color: Colors.red)),
+              onPressed: () {
+                print('jalaaaaaaaaaaaal' + barcode);
+                Navigator.of(context).pop(barcode);
+                coachCollects();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  bool _isNumeric(String str) {
+    if (str == null) {
+      return false;
+    }
+    return double.tryParse(str) != null;
+  }
+
+// Method for scanning barcode....
+  Future barcodeScanning() async {
+    try {
+      String barcode = await BarcodeScanner.scan();
+      if ((barcode.length == 13) && (_isNumeric(barcode))) {
+        setState(() => this.barcode = barcode);
+        _confirmationPopUp(context);
+      } else {
+        setState(() => this.message = 'Invalid barcode content');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
+      }
+    } on PlatformException catch (e) {
+      if (e.code == BarcodeScanner.CameraAccessDenied) {
+        setState(() => this.message = 'No camera permission!');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
+      } else {
+        setState(() => this.message = 'Unknown error: $e');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
+      }
+    } on FormatException {
+      setState(() => this.message = 'Nothing captured.');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+            content: new Text(message,
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  color: Colors.red,
+                  fontSize: 20.0,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold,
+                ))),
+      );
+    } catch (e) {
+      setState(() => this.message = 'Unknown error: $e');
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+            content: new Text(message,
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  color: Colors.red,
+                  fontSize: 20.0,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold,
+                ))),
+      );
+    }
   }
 
   getUserInformation() async {
@@ -779,21 +927,39 @@ class _MenuProfilePageState extends State<MenuProfilePage>
           }
           break;
       }
-      _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(
-          content: new Text(
-            message,
-            textAlign: TextAlign.center,
-            style: new TextStyle(
-              color: Colors.white,
-              fontSize: 20.0,
-              fontFamily: 'Ubuntu',
-              //fontStyle: FontStyle.italic,
-              fontWeight: FontWeight.bold,
+      if (response.statusCode == 200) {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            content: new Text(
+              message,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.green,
+                fontSize: 20.0,
+                fontFamily: 'Ubuntu',
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      } else {
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+            content: new Text(
+              message,
+              textAlign: TextAlign.center,
+              style: new TextStyle(
+                color: Colors.red,
+                fontSize: 20.0,
+                fontFamily: 'Ubuntu',
+                //fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        );
+      }
     });
   }
 
@@ -840,6 +1006,6 @@ class _MenuProfilePageState extends State<MenuProfilePage>
       ));
     }
   }
-    String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 
+  String capitalize(String s) => s[0].toUpperCase() + s.substring(1);
 }
