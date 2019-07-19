@@ -58,6 +58,16 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     _controller.dispose();
     super.dispose();
   }
+Future<bool> _onBackPressed() {
+   return Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(
+                    builder: (context) => new LoginPage(),
+                    fullscreenDialog: true,
+                    maintainState: false,
+                  ),
+   );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -65,14 +75,17 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     screenHeight = size.height;
     screenWidth = size.width;
 
-    return Scaffold(
-      backgroundColor: backgroundColor,
-      key: _scaffoldKey,
-      body: Stack(
-        children: <Widget>[
-          menu(context),
-          dashboard(context),
-        ],
+    return WillPopScope(
+      onWillPop:_onBackPressed ,
+          child: Scaffold(
+        backgroundColor: backgroundColor,
+        key: _scaffoldKey,
+        body: Stack(
+          children: <Widget>[
+            menu(context),
+            dashboard(context),
+          ],
+        ),
       ),
     );
   }

@@ -50,121 +50,252 @@ class _HomePageState extends State<HomePage> {
     getWorkerStats();
   }
 
+  Future<bool> _onBackPressed() {
+    return Navigator.of(context).pushReplacement(
+      new MaterialPageRoute(
+        builder: (context) => new LoginPage(),
+        fullscreenDialog: true,
+        maintainState: false,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-      /*appBar: new AppBar(
-        title: new Text('Mon profil'),
-      ),*/
-      body: new Container(
-        decoration: new BoxDecoration(
-            /* image: new DecorationImage(
-                image: new AssetImage('assets/bg.jpg'),
-                fit: BoxFit.cover,
-                colorFilter: new ColorFilter.mode(
-                    Colors.blueAccent.withAlpha(0xBF), BlendMode.darken))*/
-            ),
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  InkWell(
-                    onTap: () {
-                      print('tapped logout');
-                      Navigator.of(context).pushReplacement(
-                        new MaterialPageRoute(
-                          builder: (context) => new LoginPage(),
-                          fullscreenDialog: true,
-                          maintainState: false,
+  
+   return Scaffold(
+        key: _scaffoldKey,
+        resizeToAvoidBottomInset: false,
+        /*appBar: new AppBar(
+          title: new Text('Mon profil'),
+        ),*/
+        body: WillPopScope(
+      onWillPop: _onBackPressed,
+      child:Container(
+          decoration: new BoxDecoration(
+              /* image: new DecorationImage(
+                  image: new AssetImage('assets/bg.jpg'),
+                  fit: BoxFit.cover,
+                  colorFilter: new ColorFilter.mode(
+                      Colors.blueAccent.withAlpha(0xBF), BlendMode.darken))*/
+              ),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    InkWell(
+                      onTap: () {
+                        print('tapped logout');
+                        Navigator.of(context).pushReplacement(
+                          new MaterialPageRoute(
+                            builder: (context) => new LoginPage(),
+                            fullscreenDialog: true,
+                            maintainState: false,
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                            left: 8.0, right: 24, bottom: 8),
+                        child: Icon(
+                          (MyFlutterApp.MyFlutterApp.logout),
+                          size: 40,
+                          color: Colors.red,
                         ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          left: 8.0, right: 24, bottom: 8),
-                      child: Icon(
-                        (MyFlutterApp.MyFlutterApp.logout),
-                        size: 40,
-                        color: Colors.red,
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-              child: new Card(
-                color: Colors.blue[50].withOpacity(1.0),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                child: new Card(
+                  color: Colors.blue[50].withOpacity(1.0),
+                  child: new Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: new Column(
+                      children: <Widget>[
+                        new Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            ClipOval(
+                              child: new GestureDetector(
+                                child: _user?.avatar != null
+                                    ? Image.network(
+                                        ("http://192.168.1.101:8000/" +
+                                            _user?.avatar),
+                                        /*Uri.https(
+                                                ApiService.baseUrl, _user?.avatar)
+                                            .toString(),*/
+                                        fit: BoxFit.cover,
+                                        width: 90.0,
+                                        height: 90.0,
+                                      )
+                                    : new Image.asset(
+                                        'assets/user.png',
+                                        width: 90.0,
+                                        height: 90.0,
+                                      ),
+                                // onTap: _pickAndUploadImage,
+                              ),
+                            ),
+                            new Expanded(
+                              child: ListTile(
+                                  title: _user != null
+                                      ? Text(
+                                          "Hello " +
+                                              capitalize(_user?.firstname),
+                                          style: new TextStyle(
+                                            fontFamily: 'Pacifico',
+                                            fontSize: 21.0,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        )
+                                      : Text(
+                                          "Hello " + "loading...",
+                                          style: new TextStyle(
+                                            fontFamily: 'Pacifico',
+                                            fontSize: 24.0,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                  subtitle: _user != null
+                                      ? Text(
+                                          "${capitalize(_user?.email)}\n${capitalize(_user?.role)}",
+                                          style: new TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w400,
+                                              fontStyle: FontStyle.italic),
+                                        )
+                                      : Text(
+                                          "${"loading..."}\n${"loading..."}",
+                                          style: new TextStyle(
+                                              fontSize: 14.0,
+                                              fontWeight: FontWeight.w400,
+                                              fontStyle: FontStyle.italic),
+                                        )),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              new Center(
+                // circles
+                child: new Column(
+                  children: <Widget>[
+                    new Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Container(
+                          //width: 50.0,
+                          //height: 50.0,
+                          padding: const EdgeInsets.all(
+                              50), //I used some padding without fixed width and height
+                          decoration: new BoxDecoration(
+                            shape: BoxShape
+                                .circle, // You can use like this way or like the below line
+                            //borderRadius: new BorderRadius.circular(30.0),
+                            border: new Border.all(
+                              width: 3.0,
+                              color: Colors.blue[300].withOpacity(1.0),
+                            ),
+                            color: Colors.lightGreen,
+                          ),
+                          child: new Text(
+                              "${_todayScanned != null ? _todayScanned : ""}",
+                              // "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
+                              style: new TextStyle(
+                                  color: Colors.yellow,
+                                  fontFamily: 'Athletic',
+                                  fontSize:
+                                      50.0)), // You can add a Icon instead of text also, like below.
+                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                        new Container(
+                          //width: 50.0,
+                          //height: 50.0,
+                          padding: const EdgeInsets.all(
+                              50), //I used some padding without fixed width and height
+                          decoration: new BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: new Border.all(
+                              width: 3.0,
+                              color: Colors.orange,
+                            ),
+                            // You can use like this way or like the below line
+                            //borderRadius: new BorderRadius.circular(30.0),
+                            color: Color(0xff32a05f),
+                          ),
+                          child: new Text(
+                              "${_atScanned != null ? _atScanned : ""}",
+                              style: new TextStyle(
+                                  fontFamily: 'Athletic',
+                                  color: Colors.blue[100],
+                                  fontSize:
+                                      50.0)), // You can add a Icon instead of text also, like below.
+                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              new Center(
+                // texts
                 child: new Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.only(top: 0),
                   child: new Column(
                     children: <Widget>[
                       new Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        // mainAxisSize: MainAxisSize.max,
                         children: <Widget>[
-                          ClipOval(
-                            child: new GestureDetector(
-                              child: _user?.avatar != null
-                                  ? Image.network(
-                                      ("http://192.168.1.101:8000/" +
-                                          _user?.avatar),
-                                      /*Uri.https(
-                                              ApiService.baseUrl, _user?.avatar)
-                                          .toString(),*/
-                                      fit: BoxFit.cover,
-                                      width: 90.0,
-                                      height: 90.0,
-                                    )
-                                  : new Image.asset(
-                                      'assets/user.png',
-                                      width: 90.0,
-                                      height: 90.0,
-                                    ),
-                              // onTap: _pickAndUploadImage,
-                            ),
+                          new Container(
+                            //width: 50.0,
+                            //height: 50.0,
+                            padding: const EdgeInsets.only(
+                                right:
+                                    30), //I used some padding without fixed width and height
+
+                            child: new Text('Scannés\naujourd\'hui',
+                                textAlign: TextAlign.center,
+                                style: new TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Ubuntu',
+                                  //fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
+                                )),
+                            // You can add a Icon instead of text also, like below.
+                            //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
                           ),
-                          new Expanded(
-                            child: ListTile(
-                                title: _user != null
-                                    ? Text(
-                                        "Hello " + capitalize(_user?.firstname),
-                                        style: new TextStyle(
-                                          fontFamily: 'Pacifico',
-                                          fontSize: 21.0,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      )
-                                    : Text(
-                                        "Hello " + "loading...",
-                                        style: new TextStyle(
-                                          fontFamily: 'Pacifico',
-                                          fontSize: 24.0,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                subtitle: _user != null
-                                    ? Text(
-                                        "${capitalize(_user?.email)}\n${capitalize(_user?.role)}",
-                                        style: new TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.italic),
-                                      )
-                                    : Text(
-                                        "${"loading..."}\n${"loading..."}",
-                                        style: new TextStyle(
-                                            fontSize: 14.0,
-                                            fontWeight: FontWeight.w400,
-                                            fontStyle: FontStyle.italic),
-                                      )),
+                          new Container(
+                            //width: 50.0,
+                            //height: 50.0,
+                            padding: const EdgeInsets.only(
+                                right:
+                                    18), //I used some padding without fixed width and height
+
+                            child: new Text('Totale\nscannés',
+                                textAlign: TextAlign.center,
+                                style: new TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Ubuntu',
+                                  fontWeight: FontWeight.bold,
+                                )), // You can add a Icon instead of text also, like below.
+                            //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
                           ),
                         ],
                       ),
@@ -172,241 +303,132 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-            ),
-            new Center(
-              // circles
-              child: new Column(
-                children: <Widget>[
-                  new Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    // mainAxisSize: MainAxisSize.max,
+              new Center(
+                // texts
+                child: new Padding(
+                  padding: const EdgeInsets.only(top: 0),
+                  child: new Column(
                     children: <Widget>[
-                      new Container(
-                        //width: 50.0,
-                        //height: 50.0,
-                        padding: const EdgeInsets.all(
-                            50), //I used some padding without fixed width and height
-                        decoration: new BoxDecoration(
-                          shape: BoxShape
-                              .circle, // You can use like this way or like the below line
-                          //borderRadius: new BorderRadius.circular(30.0),
-                          color: Colors.lightGreen,
-                        ),
-                        child: new Text(
-                            "${_todayScanned != null ? _todayScanned : ""}",
-                            // "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
-                            style: new TextStyle(
-                                color: Colors.yellow,
-                                fontFamily: 'Athletic',
-                                fontSize:
-                                    50.0)), // You can add a Icon instead of text also, like below.
-                        //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                      ),
-                      new Container(
-                        //width: 50.0,
-                        //height: 50.0,
-                        padding: const EdgeInsets.all(
-                            50), //I used some padding without fixed width and height
-                        decoration: new BoxDecoration(
-                          shape: BoxShape.circle,
-                          // You can use like this way or like the below line
-                          //borderRadius: new BorderRadius.circular(30.0),
-                          color: Color(0xff32a05f),
-                        ),
-                        child: new Text(
-                            "${_atScanned != null ? _atScanned : ""}",
-                            style: new TextStyle(
-                                fontFamily: 'Athletic',
-                                color: Colors.blue[100],
-                                fontSize:
-                                    50.0)), // You can add a Icon instead of text also, like below.
-                        //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            new Center(
-              // texts
-              child: new Padding(
-                padding: const EdgeInsets.only(top: 0),
-                child: new Column(
-                  children: <Widget>[
-                    new Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        new Container(
-                          //width: 50.0,
-                          //height: 50.0,
-                          padding: const EdgeInsets.only(
-                              right:
-                                  30), //I used some padding without fixed width and height
-
-                          child: new Text('Scannés\naujourd\'hui',
-                              textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.black,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                //fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          // You can add a Icon instead of text also, like below.
-                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                        ),
-                        new Container(
-                          //width: 50.0,
-                          //height: 50.0,
-                          padding: const EdgeInsets.only(
-                              right:
-                                  18), //I used some padding without fixed width and height
-
-                          child: new Text('Totale\nscannés',
-                              textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.black,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,
-                              )), // You can add a Icon instead of text also, like below.
-                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            new Center(
-              // texts
-              child: new Padding(
-                padding: const EdgeInsets.only(top: 0),
-                child: new Column(
-                  children: <Widget>[
-                    new Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 8),
-                            child: FlatButton(
-                              onPressed: () {
-                                print('enter barcode');
-                                _asyncInputDialog(context);
-                              },
-                              child: Image.asset('assets/input-barcode.png',
-                                  width: 150, height: 125),
+                      new Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        // mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 8),
+                              child: FlatButton(
+                                onPressed: () {
+                                  print('enter barcode');
+                                  _asyncInputDialog(context);
+                                },
+                                child: Image.asset('assets/input-barcode.png',
+                                    width: 150, height: 125),
+                              ),
+                              // You can add a Icon instead of text also, like below.
+                              //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
                             ),
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: FlatButton(
+                                onPressed: () {
+                                  barcodeScanning();
+                                },
+                                child: Image.asset('assets/scan-barcode.png',
+                                    width: 150, height: 116),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      new Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        // mainAxisSize: MainAxisSize.max,
+                        children: <Widget>[
+                          new Container(
+                            //width: 50.0,
+                            //height: 50.0,
+                            // padding: const EdgeInsets.only(left:0 ), //I used some padding without fixed width and height
+
+                            child: new Text('Saisir\ncode à barre',
+                                textAlign: TextAlign.center,
+                                style: new TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Ubuntu',
+                                  //fontStyle: FontStyle.italic,
+                                  fontWeight: FontWeight.bold,
+                                )),
                             // You can add a Icon instead of text also, like below.
                             //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
                           ),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: FlatButton(
-                              onPressed: () {
-                                barcodeScanning();
-                              },
+                          new Container(
+                            //width: 50.0,
+                            //height: 50.0,
+                            // padding: const EdgeInsets.only(right:0 ),
+                            //I used some padding without fixed width and height
 
-                              child: Image.asset('assets/scan-barcode.png',
-                                  width: 150, height: 116),
-                            ),
+                            child: new Text('Scanner\ncode à barre',
+                                textAlign: TextAlign.center,
+                                style: new TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 20.0,
+                                  fontFamily: 'Ubuntu',
+                                  fontWeight: FontWeight.bold,
+                                )), // You can add a Icon instead of text also, like below.
+                            //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
                           ),
-                        ),
-                      ],
-                    ),
-                    new Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      // mainAxisSize: MainAxisSize.max,
-                      children: <Widget>[
-                        new Container(
-                          //width: 50.0,
-                          //height: 50.0,
-                          // padding: const EdgeInsets.only(left:0 ), //I used some padding without fixed width and height
-
-                          child: new Text('Saisir\ncode à barre',
-                              textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.black,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                //fontStyle: FontStyle.italic,
-                                fontWeight: FontWeight.bold,
-                              )),
-                          // You can add a Icon instead of text also, like below.
-                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                        ),
-                        new Container(
-                          //width: 50.0,
-                          //height: 50.0,
-                          // padding: const EdgeInsets.only(right:0 ),
-                          //I used some padding without fixed width and height
-
-                          child: new Text('Scanner\ncode à barre',
-                              textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.black,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,
-                              )), // You can add a Icon instead of text also, like below.
-                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 22.0),
-              child: Container(
-                color: Color.fromRGBO(55, 230, 199, 1.0),
-                height: 50,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Icon(Icons.home, color: Colors.black, size: 30),
-                    IconButton(
-                      icon: Icon(Icons.blur_on, color: Colors.black, size: 30),
+              Padding(
+                padding: const EdgeInsets.only(top: 16.0),
+                child: Container(
+                  color: Color.fromRGBO(55, 230, 199, 1.0),
+                  height: 50,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Icon(Icons.home, color: Colors.black, size: 30),
+                      IconButton(
+                        icon:
+                            Icon(Icons.history, color: Colors.black, size: 30),
                         onPressed: () {
-                            print('tapped Scanner');
-                            Navigator.of(context).pushReplacement(
-                              new MaterialPageRoute(
-                                builder: (context) =>
-                                    new HistoriquePage(_token),
-                                fullscreenDialog: true,
-                                maintainState: false,
-                              ),
-                            );
-                          },
+                          print('tapped Scanner');
+                          Navigator.of(context).pushReplacement(
+                            new MaterialPageRoute(
+                              builder: (context) => new HistoriquePage(_token),
+                              fullscreenDialog: true,
+                              maintainState: false,
+                            ),
+                          );
+                        },
+                      ),
+                      /*IconButton(
+                      icon: Icon(Icons.blur_on, color: Colors.white),
+                      onPressed: () {},
                     ),
-                    /*IconButton(
-                    icon: Icon(Icons.blur_on, color: Colors.white),
-                    onPressed: () {},
+                    IconButton(
+                      icon: Icon(Icons.hotel, color: Colors.white),
+                      onPressed: () {},
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.account_box, color: Colors.white),
+                      onPressed: () {},
+                    )*/
+                    ],
                   ),
-                  IconButton(
-                    icon: Icon(Icons.hotel, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.account_box, color: Colors.white),
-                    onPressed: () {},
-                  )*/
-                  ],
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -507,9 +529,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
-
-    Future<String> _confirmationPopUp(BuildContext context) async {
+  Future<String> _confirmationPopUp(BuildContext context) async {
     //String barcode = '';
     return showDialog<String>(
       context: context,
@@ -517,23 +537,24 @@ class _HomePageState extends State<HomePage> {
           false, // dialog is dismissible with a tap on the barrier
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Voulez vous confirmer le sac de ce code à barre ?',
-          textAlign: TextAlign.center,),
+          title: Text(
+            'Voulez vous confirmer le sac de ce code à barre ?',
+            textAlign: TextAlign.center,
+          ),
           content: new Row(
             children: <Widget>[
               new Expanded(
-                child: Text(barcode,
-                textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.black,
-                                fontSize: 25.0,
-                                fontFamily: 'Athletic',
-                                //fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                
-                
+                child: Text(
+                  barcode,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.black,
+                    fontSize: 25.0,
+                    fontFamily: 'Athletic',
+                    //fontWeight: FontWeight.bold,
+                    letterSpacing: 2,
+                  ),
                 ),
-              ),
               ),
             ],
           ),
@@ -547,8 +568,7 @@ class _HomePageState extends State<HomePage> {
             new FlatButton(
               color: Colors.lightGreen,
               child: new Text('Confirm', style: TextStyle(color: Colors.red)),
-              onPressed: () {               
-               
+              onPressed: () {
                 print('jalaaaaaaaaaaaal' + barcode);
                 Navigator.of(context).pop(barcode);
                 workerCollects();
@@ -560,8 +580,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-bool _isNumeric(String str) {
-    if(str == null) {
+  bool _isNumeric(String str) {
+    if (str == null) {
       return false;
     }
     return double.tryParse(str) != null;
@@ -569,72 +589,79 @@ bool _isNumeric(String str) {
 
 // Method for scanning barcode....
   Future barcodeScanning() async {
-
     try {
       String barcode = await BarcodeScanner.scan();
-      if ((barcode.length==13) && (_isNumeric(barcode)))
-      {
-      setState(() => this.barcode = barcode);
-      _confirmationPopUp(context);
- }
-      else {
-      setState(() => this.message = 'Invalid barcode content');
-      _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,))),
-      );
-      
+      if ((barcode.length == 13) && (_isNumeric(barcode))) {
+        setState(() => this.barcode = barcode);
+        _confirmationPopUp(context);
+      } else {
+        setState(() => this.message = 'Invalid barcode content');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
       }
     } on PlatformException catch (e) {
       if (e.code == BarcodeScanner.CameraAccessDenied) {
-        setState(() =>
-          this.message = 'No camera permission!' );
-      _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,))),
-      );
-        
+        setState(() => this.message = 'No camera permission!');
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
       } else {
         setState(() => this.message = 'Unknown error: $e');
-      _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,))),
-      );
+        _scaffoldKey.currentState.showSnackBar(
+          new SnackBar(
+              content: new Text(message,
+                  textAlign: TextAlign.center,
+                  style: new TextStyle(
+                    color: Colors.red,
+                    fontSize: 20.0,
+                    fontFamily: 'Ubuntu',
+                    fontWeight: FontWeight.bold,
+                  ))),
+        );
       }
     } on FormatException {
       setState(() => this.message = 'Nothing captured.');
       _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,))),
+        new SnackBar(
+            content: new Text(message,
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  color: Colors.red,
+                  fontSize: 20.0,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold,
+                ))),
       );
-      
     } catch (e) {
       setState(() => this.message = 'Unknown error: $e');
-           _scaffoldKey.currentState.showSnackBar(
-        new SnackBar(content: new Text(message,textAlign: TextAlign.center,
-                              style: new TextStyle(
-                                color: Colors.red,
-                                fontSize: 20.0,
-                                fontFamily: 'Ubuntu',
-                                fontWeight: FontWeight.bold,))),
+      _scaffoldKey.currentState.showSnackBar(
+        new SnackBar(
+            content: new Text(message,
+                textAlign: TextAlign.center,
+                style: new TextStyle(
+                  color: Colors.red,
+                  fontSize: 20.0,
+                  fontFamily: 'Ubuntu',
+                  fontWeight: FontWeight.bold,
+                ))),
       );
-
     }
   }
 
@@ -662,7 +689,7 @@ bool _isNumeric(String str) {
     _apiService.workerCollects(_token, barcode).then((http.Response response) {
       print('I guess shit works');
       print('statuuuuuuuuuuus==' + response.statusCode.toString());
-      barcode='';
+      barcode = '';
       String message = '';
       switch (response.statusCode) {
         case 404:

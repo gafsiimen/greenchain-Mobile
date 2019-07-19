@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:node_auth/MenuDashboardPage.dart';
 
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:node_auth/MenuDashboardPage.dart' as prefix0;
 import 'package:node_auth/scan.dart';
 import 'package:flutter/services.dart';
 
@@ -72,13 +73,26 @@ class _MenuProfilePageState extends State<MenuProfilePage>
     super.dispose();
   }
 
+Future<bool> _onBackPressed() {
+   return Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(
+                    builder: (context) => new MenuDashboardPage(_token),
+                    fullscreenDialog: true,
+                    maintainState: false,
+                  ),
+   );
+}
+
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop:_onBackPressed ,
+          child: Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: backgroundColor,
       key: _scaffoldKey,
@@ -88,7 +102,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
           profile(context),
         ],
       ),
-    );
+    ),);
   }
 
   Widget menu(context) {

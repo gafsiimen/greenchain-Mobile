@@ -44,7 +44,7 @@ flutter:
    - assets/empty.png
    - assets/full.png
    - assets/empty2.png
-   - assets/full2.png
+   - assets/full2.png   
    
 
   # An image asset can refer to one or more resolution-specific "variants", see

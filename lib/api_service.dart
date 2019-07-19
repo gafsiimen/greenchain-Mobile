@@ -51,17 +51,17 @@ class User {
         /* @override
       String toString() => '$name, $email, $imageUrl';*/ 
 }
-/*class Scan {
-  final int id;
-  final String firstname;
-  final String lastname;
-  //final DateTime createdAt;
- final String avatar;
-  final String email;
-  final String role;
+class History {
+  
+  final DateTime date;
+  final String barcode;
 
-  Scan({this.id,this.firstname,this.lastname,this.email,this.role,this.avatar});
-}*/
+  History({this.date,this.barcode });
+  
+  History.fromJson(Map<String, dynamic> json)
+      : date = DateTime.tryParse(json['created_at']) ?? new DateTime.now(),
+        barcode=json['barcode'];
+}
 
 
 class MyHttpException extends HttpException {
@@ -366,6 +366,26 @@ Future<WStat> workerNumbers(String token) async {
     print(tStats);    
     
     return tStats;
+  }
+
+
+    Future<List<History>> workerHistory(String token) async {
+    String url = Uri.encodeFull('http://192.168.1.101:8000/api/worker/MySacsHistory');
+
+    http.Response response = await get(url,token);
+    print("Response Body: "+ response.body);   
+    var resBody = json.decode(response.body);
+    var data= resBody["All_History"];
+    //print("trieurs  = "+ data.toString());
+    List<History> _histories = [];
+    //Trieur trieur = Trieur.fromJson(json.decode(data));
+
+    for (var bookval in data) {
+      History _history = History.fromJson(bookval);
+      _histories.add(_history);
+    }
+    return _histories;
+  
   }
 
 

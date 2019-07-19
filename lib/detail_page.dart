@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:node_auth/MenuTrieursPage.dart';
 import 'package:node_auth/api_service.dart';
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:flutter/services.dart';
@@ -32,6 +33,17 @@ class _DetailPageState extends State<DetailPage> {
 
     getTrieurStats();
   }
+
+
+Future<bool> _onBackPressed() {
+   return Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(
+                    builder: (context) => new MenuTrieursPage(_token),
+                    fullscreenDialog: true,
+                    maintainState: false,
+                  ),
+   );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -474,13 +486,16 @@ class _DetailPageState extends State<DetailPage> {
       ),
     );
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop:_onBackPressed ,
+          child: Scaffold(
       key: _scaffoldKey,
       //resizeToAvoidBottomInset: false,
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[topContent, bottomContent],
         ),
+      ),
       ),
     );
   }

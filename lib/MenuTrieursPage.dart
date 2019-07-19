@@ -57,13 +57,26 @@ class _MenuTrieursPageState extends State<MenuTrieursPage>
     super.dispose();
   }
 
+
+Future<bool> _onBackPressed() {
+   return Navigator.of(context).pushReplacement(
+                  new MaterialPageRoute(
+                    builder: (context) => new MenuProfilePage(_token),
+                    fullscreenDialog: true,
+                    maintainState: false,
+                  ),
+   );
+}
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     screenHeight = size.height;
     screenWidth = size.width;
 
-    return Scaffold(
+    return WillPopScope(
+      onWillPop:_onBackPressed ,
+          child: Scaffold(
       backgroundColor: backgroundColor,
       body: Stack(
         children: <Widget>[
@@ -71,6 +84,7 @@ class _MenuTrieursPageState extends State<MenuTrieursPage>
           //topAppBar,
           dashboard(context),
         ],
+      ),
       ),
     );
   }
