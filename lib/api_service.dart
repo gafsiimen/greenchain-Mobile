@@ -183,13 +183,16 @@ class MyHttpException extends HttpException {
 
 
 class ApiService {
-  static const String baseUrl = '192.168.1.101:8000';
+  
   //static const int port = 8000;
   static const String Authorization = 'access_token';
 
   static ApiService instance;
   factory ApiService() => instance ??= ApiService._internal();
   ApiService._internal();
+
+  get baseUrl => 'http://192.168.1.101:8000/';
+  get apiUrl => 'http://192.168.1.101:8000/api/';
 
   // return message and token
   Future<http.Response> post(String url, var body){
@@ -221,7 +224,7 @@ class ApiService {
 
   
   Future<Login> signIn(String email, String password) async {
-      String url = Uri.encodeFull('http://192.168.1.101:8000/api/auth/Mlogin');
+      String url = Uri.encodeFull(apiUrl+'auth/Mlogin');
       var body = {"email": email, "password": password};
       try{
       http.Response response = await post(url,body);
@@ -238,7 +241,7 @@ class ApiService {
   } 
   
   Future<User> getUserProfile(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/auth/user');
+    String url = Uri.encodeFull(apiUrl+'auth/user');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);
@@ -252,7 +255,7 @@ class ApiService {
   }
 
     Future<http.Response> workerCollects(String token,String barcode) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/workers/sacs/collect_sac_in_bank/$barcode');
+    String url = Uri.encodeFull(apiUrl+'workers/sacs/collect_sac_in_bank/$barcode');
 
     http.Response response = await put(url,token);
     print("Response Body: "+ response.body);    
@@ -262,7 +265,7 @@ class ApiService {
   }
 
       Future<http.Response> coachCollects(String token,String barcode,int id) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coachs/sacs/collect_sac_from_trieur/$barcode');
+    String url = Uri.encodeFull(apiUrl+'coachs/sacs/collect_sac_from_trieur/$barcode');
 
     http.Response response = await put2(url,token,id);
     print("Response Body: "+ response.body);    
@@ -272,7 +275,7 @@ class ApiService {
   }
 
         Future<http.Response> coachAssigns(String token,String barcode,int id) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coachs/sacs/assign_sac_trieur/$barcode');
+    String url = Uri.encodeFull(apiUrl+'coachs/sacs/assign_sac_trieur/$barcode');
 
     http.Response response = await put2(url,token,id);
     print("Response Body: "+ response.body);    
@@ -283,7 +286,7 @@ class ApiService {
 
 
 Future<WStat> workerNumbers(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/worker/MySacsNumbers');
+    String url = Uri.encodeFull(apiUrl+'worker/MySacsNumbers');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   
@@ -293,7 +296,7 @@ Future<WStat> workerNumbers(String token) async {
     return wStat;
   }
   Future<Sac> coachSacs(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/MySacsNumbers');
+    String url = Uri.encodeFull(apiUrl+'coach/MySacsNumbers');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   
@@ -304,7 +307,7 @@ Future<WStat> workerNumbers(String token) async {
   }
 
     Future<Point> coachPoints(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/MyPoints');
+    String url = Uri.encodeFull(apiUrl+'coach/MyPoints');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   
@@ -315,7 +318,7 @@ Future<WStat> workerNumbers(String token) async {
   }
 
   Future<String> coachTrieursNumber(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/MyTrieursNumber');
+    String url = Uri.encodeFull(apiUrl+'coach/MyTrieursNumber');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   
@@ -327,7 +330,7 @@ Future<WStat> workerNumbers(String token) async {
   }
 
   Future<String> referralsNumber(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/users/referralsNumber');
+    String url = Uri.encodeFull(apiUrl+'users/referralsNumber');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   
@@ -339,7 +342,7 @@ Future<WStat> workerNumbers(String token) async {
   }
 
     Future<List<User>> coachTrieurs(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/mytrieurs');
+    String url = Uri.encodeFull(apiUrl+'coach/mytrieurs');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   
@@ -358,7 +361,7 @@ Future<WStat> workerNumbers(String token) async {
   }
 
     Future<TStats> trieurdistributedcollected(String token,int id) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/coach/trieurStats/$id');
+    String url = Uri.encodeFull(apiUrl+'coach/trieurStats/$id');
 
     http.Response response = await put(url,token);
     print("Response Body: "+ response.body);   
@@ -370,7 +373,7 @@ Future<WStat> workerNumbers(String token) async {
 
 
     Future<List<History>> workerHistory(String token) async {
-    String url = Uri.encodeFull('http://192.168.1.101:8000/api/worker/MySacsHistory');
+    String url = Uri.encodeFull(apiUrl+'worker/MySacsHistory');
 
     http.Response response = await get(url,token);
     print("Response Body: "+ response.body);   

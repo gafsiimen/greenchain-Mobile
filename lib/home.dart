@@ -37,6 +37,8 @@ class _HomePageState extends State<HomePage> {
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+   get baseUrl => _apiService.baseUrl;
+
   @override
   void initState() {
     super.initState();
@@ -63,71 +65,72 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
   
-   return Scaffold(
-        key: _scaffoldKey,
-        resizeToAvoidBottomInset: false,
-        /*appBar: new AppBar(
-          title: new Text('Mon profil'),
-        ),*/
-        body: WillPopScope(
-      onWillPop: _onBackPressed,
-      child:Container(
-          decoration: new BoxDecoration(
-              /* image: new DecorationImage(
-                  image: new AssetImage('assets/bg.jpg'),
-                  fit: BoxFit.cover,
-                  colorFilter: new ColorFilter.mode(
-                      Colors.blueAccent.withAlpha(0xBF), BlendMode.darken))*/
-              ),
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    InkWell(
-                      onTap: () {
-                        print('tapped logout');
-                        Navigator.of(context).pushReplacement(
-                          new MaterialPageRoute(
-                            builder: (context) => new LoginPage(),
-                            fullscreenDialog: true,
-                            maintainState: false,
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                            left: 8.0, right: 24, bottom: 8),
-                        child: Icon(
-                          (MyFlutterApp.MyFlutterApp.logout),
-                          size: 40,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                child: new Card(
-                  color: Colors.blue[50].withOpacity(1.0),
-                  child: new Padding(
-                    padding: const EdgeInsets.all(8),
-                    child: new Column(
-                      children: <Widget>[
-                        new Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            ClipOval(
-                              child: new GestureDetector(
-                                child: _user?.avatar != null
-                                    ? Image.network(
-                                        ("http://192.168.1.101:8000/" +
+   
+      return Scaffold(
+           key: _scaffoldKey,
+           resizeToAvoidBottomInset: false,
+           /*appBar: new AppBar(
+             title: new Text('Mon profil'),
+           ),*/
+           body: WillPopScope(
+         onWillPop: _onBackPressed,
+         child:Container(
+             decoration: new BoxDecoration(
+                 /* image: new DecorationImage(
+                     image: new AssetImage('assets/bg.jpg'),
+                     fit: BoxFit.cover,
+                     colorFilter: new ColorFilter.mode(
+                         Colors.blueAccent.withAlpha(0xBF), BlendMode.darken))*/
+                 ),
+             child: new Column(
+               mainAxisAlignment: MainAxisAlignment.start,
+               mainAxisSize: MainAxisSize.max,
+               children: <Widget>[
+                 Padding(
+                   padding: const EdgeInsets.only(top: 20),
+                   child: Row(
+                     crossAxisAlignment: CrossAxisAlignment.start,
+                     children: <Widget>[
+                       InkWell(
+                         onTap: () {
+                           print('tapped logout');
+                           Navigator.of(context).pushReplacement(
+                             new MaterialPageRoute(
+                               builder: (context) => new LoginPage(),
+                               fullscreenDialog: true,
+                               maintainState: false,
+                             ),
+                           );
+                         },
+                         child: Padding(
+                           padding: const EdgeInsets.only(
+                               left: 8.0, right: 24, bottom: 8),
+                           child: Icon(
+                             (MyFlutterApp.MyFlutterApp.logout),
+                             size: 40,
+                             color: Colors.red,
+                           ),
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+                 Padding(
+                   padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                   child: new Card(
+                     color: Colors.blue[50].withOpacity(1.0),
+                     child: new Padding(
+                       padding: const EdgeInsets.all(8),
+                       child: new Column(
+                         children: <Widget>[
+                           new Row(
+                             crossAxisAlignment: CrossAxisAlignment.center,
+                             children: <Widget>[
+                               ClipOval(
+                                 child: new GestureDetector(
+                                   child: _user?.avatar != null
+                                       ? Image.network(
+                                           (baseUrl +
                                             _user?.avatar),
                                         /*Uri.https(
                                                 ApiService.baseUrl, _user?.avatar)

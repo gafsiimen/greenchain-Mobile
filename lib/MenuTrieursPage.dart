@@ -30,8 +30,11 @@ class _MenuTrieursPageState extends State<MenuTrieursPage>
   ApiService _apiService;
   User _user;
   List<User> _trieurs = [];
+   get baseUrl => _apiService.baseUrl;
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+
 
   @override
   void initState() {
@@ -287,7 +290,7 @@ Future<bool> _onBackPressed() {
                       width: 2.0, color: Color.fromRGBO(55, 230, 199, 1.0)))),
           child: trieur?.avatar != null
               ? Image.network(
-                  ("http://192.168.1.101:8000/" + trieur?.avatar),
+                  (baseUrl + trieur?.avatar),
                   fit: BoxFit.contain,
                   width: 90.0,
                   height: 90.0,

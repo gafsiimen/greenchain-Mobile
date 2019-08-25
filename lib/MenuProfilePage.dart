@@ -48,6 +48,7 @@ class _MenuProfilePageState extends State<MenuProfilePage>
   final _formKey = new GlobalKey<FormState>();
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+   get baseUrl => _apiService.baseUrl;
 
   @override
   void initState() {
@@ -381,7 +382,7 @@ Future<bool> _onBackPressed() {
                                         child: new GestureDetector(
                                           child: _user?.avatar != null
                                               ? Image.network(
-                                                  ("http://192.168.1.101:8000/" +
+                                                  (baseUrl +
                                                       _user?.avatar),
                                                   fit: BoxFit.contain,
                                                   width: 90.0,

@@ -27,6 +27,7 @@ class _CoachProfileState extends State<CoachProfile> {
       'https://i.pinimg.com/originals/8f/bf/44/8fbf441fa92b29ebd0f324effbd4e616.png';
 
   ApiService _apiService;
+  
   static const String barcodeRegExpString = r'^[0-9]{13}$';
   static final RegExp barcodeRegExp =
       new RegExp(barcodeRegExpString, caseSensitive: false);
@@ -34,6 +35,8 @@ class _CoachProfileState extends State<CoachProfile> {
   final _formKey = new GlobalKey<FormState>();
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+
+  get baseUrl => _apiService.baseUrl;
 
   @override
   void initState() {
@@ -49,49 +52,50 @@ class _CoachProfileState extends State<CoachProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: greenColor,
-        key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Expanded(
-              flex: 3,
-              child: Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  borderRadius:
-                      BorderRadius.only(bottomLeft: Radius.circular(100.0)),
-                  color: Colors.white,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8, 30, 8, 0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(height: 8.0),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0),
-                        child: Icon(Icons.menu),
-                      ),
-                      SizedBox(height: 8.0),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                        child: new Card(
-                          color: Colors.blue[50].withOpacity(1.0),
-                          child: new Padding(
-                            padding: const EdgeInsets.all(8),
-                            child: new Column(
-                              children: <Widget>[
-                                new Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+    // var myUrl=baseUrl;
+        return Scaffold(
+            backgroundColor: greenColor,
+            key: _scaffoldKey,
+          resizeToAvoidBottomInset: false,
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.only(bottomLeft: Radius.circular(100.0)),
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(8, 30, 8, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          SizedBox(height: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 8.0),
+                            child: Icon(Icons.menu),
+                          ),
+                          SizedBox(height: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                            child: new Card(
+                              color: Colors.blue[50].withOpacity(1.0),
+                              child: new Padding(
+                                padding: const EdgeInsets.all(8),
+                                child: new Column(
                                   children: <Widget>[
-                                    ClipOval(
-                                      child: new GestureDetector(
-                                        child: _user?.avatar != null
-                                            ? Image.network(
-                                                ("http://192.168.1.101:8000/" +
+                                    new Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: <Widget>[
+                                        ClipOval(
+                                          child: new GestureDetector(
+                                            child: _user?.avatar != null
+                                                ? Image.network(
+                                                    (baseUrl +
                                                     _user?.avatar),
                                                 /*Uri.https(
                                               ApiService.baseUrl, _user?.avatar)

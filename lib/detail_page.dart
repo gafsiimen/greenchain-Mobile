@@ -24,6 +24,7 @@ class _DetailPageState extends State<DetailPage> {
   TStats _stats;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
+ get baseUrl => _apiService.baseUrl;
   @override
   void initState() {
     super.initState();
@@ -97,12 +98,12 @@ Future<bool> _onBackPressed() {
           new Text(
             "Adresse : " +
                 _user.address[0].toUpperCase() +
-                _user.address.substring(1) +
-                " " +
-                _user.zip.toString() +
-                " " +
-                _user.city[0].toUpperCase() +
-                _user.city.substring(1),
+                _user.address.substring(1) ,
+                // +" " +
+                // _user.zip.toString() +
+                // " " +
+                // _user.city[0].toUpperCase() +
+                // _user.city.substring(1),
             style: TextStyle(color: Colors.white, letterSpacing: 0.5),
           ),
           SizedBox(height: 10.0),
@@ -117,21 +118,22 @@ Future<bool> _onBackPressed() {
       ),
     );
 
-    final topContentText = Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        SizedBox(height: 10.0),
-        /*Icon(
-            Icons.directions_car,
-            color: Colors.white,
-            size: 40.0,
-          ),*/
-
-        Column(
+    
+        final topContentText = Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            _user?.avatar != null
-                ? Image.network(
-                    ("http://192.168.1.101:8000/" + _user?.avatar),
+            SizedBox(height: 10.0),
+            /*Icon(
+                Icons.directions_car,
+                color: Colors.white,
+                size: 40.0,
+              ),*/
+    
+            Column(
+              children: <Widget>[
+                _user?.avatar != null
+                    ? Image.network(
+                      (baseUrl + _user?.avatar),
                     fit: BoxFit.contain,
                     width: 160.0,
                     height: 150.0,
