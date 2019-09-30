@@ -191,8 +191,8 @@ class ApiService {
   factory ApiService() => instance ??= ApiService._internal();
   ApiService._internal();
 
-  get baseUrl => 'http://192.168.1.101:8000/';
-  get apiUrl => 'http://192.168.1.101:8000/api/';
+  get baseUrl => 'http://192.168.43.119:8000/';
+  get apiUrl => 'http://192.168.43.119:8000/api/';
 
   // return message and token
   Future<http.Response> post(String url, var body){

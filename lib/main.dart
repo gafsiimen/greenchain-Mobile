@@ -117,7 +117,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 style: TextStyle(
                     fontSize: 80.0,
                     fontWeight: FontWeight.bold,
-                    color: Colors.green)),
+                    color: Color.fromRGBO(0, 69, 241, 1),)), //blue
           )
         ],
       ),
@@ -175,19 +175,19 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         child: _buttonSqueezeAnimation.value > 75.0
             ? new MaterialButton(
                 onPressed: _login,
-                color: Theme.of(context).backgroundColor,
+                color: new Color.fromRGBO(221, 36, 118, 1), //pink
                 child: new Text(
                   'LOGIN',
-                  style: new TextStyle(color: Colors.white, fontSize: 16.0),
+                  style: new TextStyle(color: new Color.fromRGBO(55, 230, 199, 1), fontSize: 16.0), //my pistache
                 ),
-                splashColor: new Color(0xFF00e676),
+                splashColor: new Color.fromRGBO(0, 69, 241, 1), //blue
               )
             : new Container(
                 padding:
                     new EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                 child: new CircularProgressIndicator(
                   strokeWidth: 4.0,
-                  valueColor: new AlwaysStoppedAnimation<Color>(Colors.green),
+                  valueColor: new AlwaysStoppedAnimation<Color>(new Color.fromRGBO(221, 36, 118, 1),), //pink
                 ),
               ),
       ),
