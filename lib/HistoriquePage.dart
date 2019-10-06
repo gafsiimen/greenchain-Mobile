@@ -1,16 +1,14 @@
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:node_auth/api_service.dart';
 import 'package:node_auth/home.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
 
 final Color backgroundColor = Color(0xFF4A4A58);
 var darkGreenColor = Color(0xff279152);
 
 class HistoriquePage extends StatefulWidget {
-  final String token;
-  HistoriquePage(this.token);
   @override
   _HistoriquePageState createState() => _HistoriquePageState();
 }
@@ -21,24 +19,30 @@ class _HistoriquePageState extends State<HistoriquePage> {
   List<History> _histories = [];
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
+  SharedPreferences prefs;
 
-//   int _selectedIndex=2;
-// PageController _pageController;
   @override
   void initState() {
     super.initState();
-//  _pageController = PageController();
+    _gettingToken();
 
-    _token = widget.token;
     _apiService = new ApiService();
 
-    getHistory();
+    
+  }
+
+  _gettingToken() async {
+    SharedPreferences.getInstance().then((onValue) {
+      prefs = onValue;
+      _token = prefs.getString('token');
+      getHistory();
+    });
   }
 
   Future<bool> _onBackPressed() {
     return Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
-        builder: (context) => new HomePage(_token),
+        builder: (context) => new HomePage(),
         fullscreenDialog: true,
         maintainState: false,
       ),
@@ -106,7 +110,7 @@ class _HistoriquePageState extends State<HistoriquePage> {
 
   Widget dashboard(context) {
     // final makeBottom = BottomNavyBar(
-    //   selectedIndex: _selectedIndex,       
+    //   selectedIndex: _selectedIndex,
     //   showElevation: true, // use this to remove appBar's elevation
     //   onItemSelected: (index) => setState(() {
     //         _selectedIndex = index;
@@ -254,6 +258,4 @@ class _HistoriquePageState extends State<HistoriquePage> {
       ));
     }
   }
-
-
 }

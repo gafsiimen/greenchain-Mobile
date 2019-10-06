@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:node_auth/MenuProfilePage.dart';
 import 'package:node_auth/MenuTrieursPage.dart';
 import 'package:node_auth/custom/custom_text.dart';
@@ -58,16 +59,16 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
     _controller.dispose();
     super.dispose();
   }
-Future<bool> _onBackPressed() {
-   return Navigator.of(context).pushReplacement(
-                  new MaterialPageRoute(
-                    builder: (context) => new LoginPage(),
-                    fullscreenDialog: true,
-                    maintainState: false,
-                  ),
-   );
-}
 
+  Future<bool> _onBackPressed() {
+    return Navigator.of(context).pushReplacement(
+      new MaterialPageRoute(
+        builder: (context) => new LoginPage(),
+        fullscreenDialog: true,
+        maintainState: false,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +77,8 @@ Future<bool> _onBackPressed() {
     screenWidth = size.width;
 
     return WillPopScope(
-      onWillPop:_onBackPressed ,
-          child: Scaffold(
+      onWillPop: _onBackPressed,
+      child: Scaffold(
         backgroundColor: backgroundColor,
         key: _scaffoldKey,
         body: Stack(
@@ -120,22 +121,23 @@ Future<bool> _onBackPressed() {
                           Icon(Icons.person_outline,
                               color: Colors.white, size: 30.0),
                           SizedBox(width: 10.0),
-                          _user!=null ?
-                          Text(
-                            capitalize(_user?.firstname),
-                            style: TextStyle(
-                                fontFamily: 'pacifico',
-                                color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w500),
-                          ): Text(
-                            "",
-                            style: TextStyle(
-                                fontFamily: 'pacifico',
-                                color: Colors.white,
-                                fontSize: 22.0,
-                                fontWeight: FontWeight.w500),
-                          ),
+                          _user != null
+                              ? Text(
+                                  capitalize(_user?.firstname),
+                                  style: TextStyle(
+                                      fontFamily: 'pacifico',
+                                      color: Colors.white,
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.w500),
+                                )
+                              : Text(
+                                  "",
+                                  style: TextStyle(
+                                      fontFamily: 'pacifico',
+                                      color: Colors.white,
+                                      fontSize: 22.0,
+                                      fontWeight: FontWeight.w500),
+                                ),
                         ],
                       ),
                     ),
@@ -280,7 +282,8 @@ Future<bool> _onBackPressed() {
 
   Widget dashboard(context) {
     var width = MediaQuery.of(context).size.width;
-    var remHeight = MediaQuery.of(context).size.height - 180;
+    //var remHeight = MediaQuery.of(context).size.height - 180;
+    var height = MediaQuery.of(context).size.height;
     return AnimatedPositioned(
       duration: duration,
       top: 0,
@@ -305,15 +308,14 @@ Future<bool> _onBackPressed() {
                   height: 25,
                 ),
                 Container(
-                  height: 38,
+                  height: height * 1 / 12,
                   child: Center(
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         InkWell(
                           child: Padding(
-                            padding:
-                                const EdgeInsets.only(right: 16.0, bottom: 16),
+                            padding: const EdgeInsets.only(right: 16.0),
                             child: Icon(
                               Icons.menu,
                               size: 35,
@@ -341,7 +343,7 @@ Future<bool> _onBackPressed() {
                             style: TextStyle(
                               fontWeight: FontWeight.w700,
                               color: Colors.black,
-                              fontSize: 32,
+                              fontSize: 28,
                             ),
                           ),
                           onTap: () {
@@ -366,69 +368,70 @@ Future<bool> _onBackPressed() {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 7,
-                ),
-                InkWell(
-                  onTap: () {
-                    /*Navigator.push(context,MyCustomRoute(
-        builder: (context) => PickCarpet()
-          ));*/
-                  },
-                  child: Container(
-                      height: 120,
-                      margin: EdgeInsets.only(top: 10, bottom: 10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(10)),
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      child: Center(
-                        child: ListTile(
-                            leading: Container(
-                              width: 80,
-                              height: 80,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(40)),
-                                color: Colors.blue,
-                              ),
-                              child: _points != null
-                                  ? new Text(_points.total_available.toString(),
-                                      textAlign: TextAlign.center,
-                                      style: new TextStyle(
-                                          color: Colors.greenAccent,
-                                          fontFamily: 'Athletic',
-                                          fontSize: 40.0))
-                                  : new Text('',
-                                      textAlign: TextAlign.center,
-                                      style: new TextStyle(
-                                          color: Colors.greenAccent,
-                                          fontFamily: 'Athletic',
-                                          fontSize: 40.0)),
+                // SizedBox(
+                //   height: 7,
+                // ),
+                Container(
+                    height: height * 2 / 12,
+                    // margin: EdgeInsets.only(top: 10, bottom: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Center(
+                      child: ListTile(
+                          leading: Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(40)),
+                              color: Colors.blue,
                             ),
-                            title: CustomText.text(
-                                text: "GP disponibles", size: 22),
-                            subtitle: _points != null
-                                ? CustomText.text(
-                                    text: _points.total_pending.toString() +
-                                        " GP en attente",
-                                    size: 16)
-                                : CustomText.text(
-                                    text: "   GP en attente", size: 16)),
-                      )),
-                ),
-                Text(
-                  "Mes Sacs",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black,
-                    fontSize: 32,
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Expanded(
+                            child: _points != null
+                                ? new Text(_points.total_available.toString(),
+                                    textAlign: TextAlign.center,
+                                    style: new TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontFamily: 'Athletic',
+                                        fontSize: 40.0))
+                                : new Text('',
+                                    textAlign: TextAlign.center,
+                                    style: new TextStyle(
+                                        color: Colors.greenAccent,
+                                        fontFamily: 'Athletic',
+                                        fontSize: 40.0)),
+                          ),
+                          title:
+                              CustomText.text(text: "GP disponibles", size: 22),
+                          subtitle: _points != null
+                              ? CustomText.text(
+                                  text: _points.total_pending.toString() +
+                                      " GP en attente",
+                                  size: 16)
+                              : CustomText.text(
+                                  text: "   GP en attente", size: 16)),
+                    )),
+                Container(
+                    height: height * 1 / 12,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          "Mes Sacs",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: Colors.black,
+                            fontSize: 22,
+                          ),
+                        ),
+                      ],
+                    )),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                Container(
+                  height: height * 8 / 12 - 30,
                   child: Stack(
                     children: <Widget>[
                       Positioned(
@@ -436,13 +439,14 @@ Future<bool> _onBackPressed() {
                         top: 0,
                         width: width * 0.45,
                         child: TrapezoidContainer(
-                          height: remHeight / 2 + 30,
+                          // height: remHeight / 2 + 30,
+                          height: height * 1 / 3,
                           width: width * 0.45,
                           color: Color.fromRGBO(87, 194, 67, 1),
                           children: <Widget>[
-                            SizedBox(
-                              height: 20,
-                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
                             Text(
                               "Sacs vides",
                               style: TextStyle(
@@ -450,46 +454,49 @@ Future<bool> _onBackPressed() {
                                   fontSize: 18,
                                   fontWeight: FontWeight.w600),
                             ),
-                            SizedBox(
-                              height: 40,
-                            ),
+                            // SizedBox(
+                            //   height: 40,
+                            // ),
                             Container(
-                                width: 80,
-                                height: 80,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(40)),
-                                  border: Border.all(
-                                    color: Color.fromRGBO(132, 140, 255, 1),
-                                    width: 5,
-                                  ),
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(40)),
+                                border: Border.all(
+                                  color: Color.fromRGBO(132, 140, 255, 1),
+                                  width: 5,
                                 ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: _sacs != null
-                                      ? Text(_sacs?.empty.toString(),
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                              color: Color.fromRGBO(
-                                                  132, 140, 255, 1),
-                                              fontFamily: 'Athletic',
-                                              fontSize: 30.0))
-                                      : Text('',
-                                          textAlign: TextAlign.center,
-                                          style: new TextStyle(
-                                              color: Color.fromRGBO(
-                                                  132, 140, 255, 1),
-                                              fontFamily: 'Athletic',
-                                              fontSize: 30.0)),
-                                ))
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(15.0),
+                                child: _sacs != null
+                                    ? Text(_sacs?.empty.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            color: Color.fromRGBO(
+                                                132, 140, 255, 1),
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0))
+                                    : Text('',
+                                        textAlign: TextAlign.center,
+                                        style: new TextStyle(
+                                            color: Color.fromRGBO(
+                                                132, 140, 255, 1),
+                                            fontFamily: 'Athletic',
+                                            fontSize: 30.0)),
+                              ),
+                            ),
+                            SizedBox(
+                              height: height * 1 / 50,
+                            ),
                           ],
                           points: [
                             Offset(0, 0),
                             Offset(width * 0.45, 0),
-                            Offset(width * 0.45,
-                                (remHeight / 2) - 40 + 10 + 20), //-10
-                            Offset(0, (remHeight / 2) + 10 + 20) //+30
+                            Offset(width * 0.45, height * 1 / 3), //-10
+                            Offset(0, height * 1 / 3) //+30
                           ],
                         ),
                       ),
@@ -498,19 +505,20 @@ Future<bool> _onBackPressed() {
                         right: 0,
                         width: width * .45,
                         child: TrapezoidContainer(
-                          height: remHeight / 2 - 30,
+                          // height: remHeight / 2 - 30,
+                          height: height * 1 / 3,
                           width: width * 0.45,
                           color: Color.fromRGBO(253, 187, 59, 1),
                           children: <Widget>[
-                            SizedBox(
-                              height: 20,
-                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
                             CustomText.text18(
                               text: "Triés et collectés",
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
                             Container(
                               width: 80,
                               height: 80,
@@ -542,27 +550,31 @@ Future<bool> _onBackPressed() {
                                             fontFamily: 'Athletic',
                                             fontSize: 30.0)),
                               ),
-                            )
+                            ),
+                            SizedBox(
+                              height: height * 1 / 50,
+                            ),
                           ],
                           points: [
                             Offset(0, 0),
                             Offset(width * 0.45, 0),
-                            Offset(width * 0.45, (remHeight / 2 - 30)), // -30
-                            Offset(0, (remHeight / 2 - 30) - 40) // -70
+                            Offset(width * 0.45, (height * 1 / 3)), // -30
+                            Offset(0, (height * 1 / 3)) // -70
                           ],
                         ),
                       ),
                       Positioned(
-                        bottom: 0,
+                        bottom: height * 1 / 50,
                         left: 0,
                         width: width * .45,
                         child: TrapezoidContainer(
-                          height: remHeight / 2 + 10 - 20,
+                          // height: remHeight / 2 + 10 - 20,
+                          height: height * 1 / 3,
                           width: width * 0.45,
                           color: Color.fromRGBO(239, 123, 175, 1),
                           children: <Widget>[
                             SizedBox(
-                              height: 58,
+                              height: height * 1 / 50,
                             ),
                             Container(
                               width: 80,
@@ -595,36 +607,33 @@ Future<bool> _onBackPressed() {
                                             fontSize: 30.0)),
                               ),
                             ),
-                            SizedBox(
-                              height: 25,
-                            ),
                             CustomText.text18(
                               text: "Sacs livrés",
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
+                            )
                           ],
                           points: [
-                            Offset(0, 40),
+                            Offset(0, height*1/15),
                             Offset(width * 0.45, 0),
-                            Offset(width * 0.45, (remHeight / 2) - 20),
-                            Offset(0, (remHeight / 2) - 20)
+                            Offset(width * 0.45, (height * 1 / 3)),
+                            Offset(0, (height * 1 / 3))
                           ],
                         ),
                       ),
                       Positioned(
-                        bottom: 10,
+                        bottom: height * 1 / 50,
                         right: 0,
                         width: width * .45,
                         child: TrapezoidContainer(
-                          height: remHeight / 2 - 18,
+                          // height: remHeight / 2 - 18,
+                          height: height * 1 / 3,
+
                           width: width * 0.45,
                           color: Color.fromRGBO(132, 140, 255, 1),
                           children: <Widget>[
                             SizedBox(
-                              height: 40,
+                              height: height * 1 / 50,
                             ),
+
                             Container(
                               width: 80,
                               height: 80,
@@ -655,21 +664,21 @@ Future<bool> _onBackPressed() {
                                             fontSize: 30.0)),
                               ),
                             ),
-                            SizedBox(
-                              height: 25,
-                            ),
+                            // SizedBox(
+                            //   height: 25,
+                            // ),
                             CustomText.text18(
                               text: "dans l\'espace\n de stockage",
                             ),
-                            SizedBox(
-                              height: 20,
-                            ),
+                            // SizedBox(
+                            //   height: 20,
+                            // ),
                           ],
                           points: [
                             Offset(0, 0),
-                            Offset(width * 0.45, 40),
-                            Offset(width * 0.45, (remHeight / 2 + 40)),
-                            Offset(0, (remHeight / 2 + 30 + 10))
+                            Offset(width * 0.45, height*1/15),
+                            Offset(width * 0.45, (height * 1 / 3)),
+                            Offset(0, height * 1 / 3)
                           ],
                         ),
                       ),

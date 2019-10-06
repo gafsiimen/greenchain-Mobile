@@ -3,10 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:node_auth/CoachProfile.dart';
+
 import 'package:node_auth/api_service.dart';
-import 'package:node_auth/home.dart';
-import 'package:node_auth/CoachDashboard3.dart';
+
 import 'package:node_auth/MenuDashboardPage.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:node_auth/register.dart';
@@ -14,7 +13,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:node_auth/testbottombar.dart';
 import 'package:node_auth/workerPages.dart';
-//import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   Stetho.initialize();
@@ -130,6 +129,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
 
     final emailTextField = new TextFormField(
+      initialValue: 'worker@example.com',
       autocorrect: true,
       autovalidate: false,
       decoration: new InputDecoration(
@@ -148,6 +148,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
 
     final passwordTextField = new TextFormField(
+      initialValue: '123456',
       autocorrect: true,
       autovalidate: false,
       obscureText: _obscurePassword,
@@ -296,9 +297,13 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
       if (response.statusCode == 200) {
         if (login.role == 'worker') {
+
+          SharedPreferences prefs = await SharedPreferences.getInstance();
+          await prefs.setString('token', login.access_token);
+
           Navigator.of(context).pushReplacement(
             new MaterialPageRoute(
-              builder: (context) => new BottomNavBar (login.access_token),
+              builder: (context) => new BottomNavBar(login.access_token),
               //new WorkerPages(login.access_token),
               //new HomePage(login.access_token),
               fullscreenDialog: true,
@@ -314,36 +319,35 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             ),
           );
         }
-      } 
+      }
     } on dio.DioError catch (e) {
       print('Exception !!!!!!!');
       if (e.response != null) {
-    if (e.response.statusCode == 404) {
-        _loginButtonController.reset();
+        if (e.response.statusCode == 404) {
+          _loginButtonController.reset();
 
-        final message = 'Email/Password incorrect';
+          final message = 'Email/Password incorrect';
 
-        _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(content: new Text(message)),
-        );
-      } else if (e.response.statusCode == 403) {
-        _loginButtonController.reset();
+          _scaffoldKey.currentState.showSnackBar(
+            new SnackBar(content: new Text(message)),
+          );
+        } else if (e.response.statusCode == 403) {
+          _loginButtonController.reset();
 
-        final message = 'Vous n"etes pas autorisé';
+          final message = 'Vous n"etes pas autorisé';
 
-        _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(content: new Text(message)),
-        );
-      } else if (e.response.statusCode == 401) {
-        _loginButtonController.reset();
+          _scaffoldKey.currentState.showSnackBar(
+            new SnackBar(content: new Text(message)),
+          );
+        } else if (e.response.statusCode == 401) {
+          _loginButtonController.reset();
 
-        final message = 'Merci d"attendre la confirmation';
+          final message = 'Merci d"attendre la confirmation';
 
-        _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(content: new Text(message)),
-        );
-      }
-
+          _scaffoldKey.currentState.showSnackBar(
+            new SnackBar(content: new Text(message)),
+          );
+        }
       } else {
         _scaffoldKey.currentState.showSnackBar(
           new SnackBar(

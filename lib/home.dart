@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:barcode_scan/barcode_scan.dart';
-import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:node_auth/HistoriquePage.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,8 +12,7 @@ import 'package:node_auth/main.dart';
 //import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
-  final String token;
-  HomePage(this.token);
+  
 
 
   @override
@@ -38,20 +35,29 @@ class _HomePageState extends State<HomePage> {
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   get baseUrl => _apiService.baseUrl;
+  SharedPreferences prefs;
+
 
   @override
   void initState() {
     super.initState();
+  _gettingToken();
 
-    _token = widget.token;
-     print("_token in HOOOOOOOOOOOOOME");
-     print(_token);
     _apiService = new ApiService();
 
-    getUserInformation();
-    getWorkerStats();
+    
   }
+ _gettingToken() async {
+     SharedPreferences.getInstance().then((onValue){
+       prefs=onValue;
+       _token = prefs.getString('token');
+     print("_token in HOOOOOOOOOOOOOME");
+     print(_token);
+     getUserInformation();
+    getWorkerStats();
 
+     });
+  }
   Future<bool> _onBackPressed() {
     return Navigator.of(context).pushReplacement(
       new MaterialPageRoute(

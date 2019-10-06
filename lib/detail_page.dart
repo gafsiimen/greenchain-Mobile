@@ -24,7 +24,7 @@ class _DetailPageState extends State<DetailPage> {
   TStats _stats;
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
- get baseUrl => _apiService.baseUrl;
+  get baseUrl => _apiService.baseUrl;
   @override
   void initState() {
     super.initState();
@@ -35,30 +35,24 @@ class _DetailPageState extends State<DetailPage> {
     getTrieurStats();
   }
 
-
-Future<bool> _onBackPressed() {
-   return Navigator.of(context).pushReplacement(
-                  new MaterialPageRoute(
-                    builder: (context) => new MenuTrieursPage(_token),
-                    fullscreenDialog: true,
-                    maintainState: false,
-                  ),
-   );
-}
+  Future<bool> _onBackPressed() {
+    return Navigator.of(context).pushReplacement(
+      new MaterialPageRoute(
+        builder: (context) => new MenuTrieursPage(_token),
+        fullscreenDialog: true,
+        maintainState: false,
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    /*final levelIndicator = Container(
-      child: Container(
-        child: LinearProgressIndicator(
-            backgroundColor: Color.fromRGBO(209, 224, 224, 0.2),
-            value: user.indicatorValue,
-            valueColor: AlwaysStoppedAnimation(Colors.green)),
-      ),
-    );*/
+    var height = MediaQuery.of(context).size.height;
+    var width = MediaQuery.of(context).size.width;
 
     final coursePrice = Container(
-      height: 110,
+      height: height * 1 / 5,
+      width: width * 0.88,
       //width: 60,
       padding: const EdgeInsets.all(7.0),
       decoration: new BoxDecoration(
@@ -66,7 +60,7 @@ Future<bool> _onBackPressed() {
           borderRadius: BorderRadius.circular(20.0)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           Align(
             alignment: Alignment.topCenter,
@@ -81,14 +75,12 @@ Future<bool> _onBackPressed() {
               ),
             ),
           ),
-          SizedBox(height: 5.0),
           new Text(
             "Email : " +
                 _user.email[0].toUpperCase() +
                 _user.email.substring(1),
             style: TextStyle(color: Colors.white, letterSpacing: 0.5),
           ),
-          SizedBox(height: 10.0),
 
           /* new Text(
       "\$" + user.price.toString(),
@@ -98,15 +90,14 @@ Future<bool> _onBackPressed() {
           new Text(
             "Adresse : " +
                 _user.address[0].toUpperCase() +
-                _user.address.substring(1) ,
-                // +" " +
-                // _user.zip.toString() +
-                // " " +
-                // _user.city[0].toUpperCase() +
-                // _user.city.substring(1),
+                _user.address.substring(1),
+            // +" " +
+            // _user.zip.toString() +
+            // " " +
+            // _user.city[0].toUpperCase() +
+            // _user.city.substring(1),
             style: TextStyle(color: Colors.white, letterSpacing: 0.5),
           ),
-          SizedBox(height: 10.0),
           Align(
             alignment: Alignment.bottomRight,
             child: new Text(
@@ -118,22 +109,20 @@ Future<bool> _onBackPressed() {
       ),
     );
 
-    
-        final topContentText = Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            SizedBox(height: 10.0),
-            /*Icon(
+    final topContentText = Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        /*Icon(
                 Icons.directions_car,
                 color: Colors.white,
                 size: 40.0,
               ),*/
-    
-            Column(
-              children: <Widget>[
-                _user?.avatar != null
-                    ? Image.network(
-                      (baseUrl + _user?.avatar),
+
+        Column(
+          children: <Widget>[
+            _user?.avatar != null
+                ? Image.network(
+                    (baseUrl + _user?.avatar),
                     fit: BoxFit.contain,
                     width: 160.0,
                     height: 150.0,
@@ -145,7 +134,6 @@ Future<bool> _onBackPressed() {
                   ),
           ],
         ),
-        SizedBox(height: 10.0),
         Text(
           _user.firstname[0].toUpperCase() +
               _user.firstname.substring(1) +
@@ -160,9 +148,9 @@ Future<bool> _onBackPressed() {
           child: new Divider(color: Colors.green),
         ),
 
-        SizedBox(height: 5.0),
         Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             //Expanded(flex: 1, child: levelIndicator),
             /*Expanded(
@@ -173,7 +161,7 @@ Future<bool> _onBackPressed() {
                       user.level,
                       style: TextStyle(color: Colors.white),
                     ))),*/
-            Expanded(flex: 1, child: coursePrice)
+            coursePrice
           ],
         ),
       ],
@@ -183,7 +171,7 @@ Future<bool> _onBackPressed() {
       children: <Widget>[
         Container(
             padding: EdgeInsets.only(left: 10.0),
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: height,
             decoration: new BoxDecoration(
               image: new DecorationImage(
                 image: new AssetImage("assets/bg.jpg"),
@@ -221,8 +209,8 @@ Future<bool> _onBackPressed() {
 
     final bottomContentText = new Center(
       // texts
-      child: new Padding(
-        padding: const EdgeInsets.only(top: 0),
+      child: new Container(
+        height: height * 0.4 * 0.79,
         child: new Column(
           children: <Widget>[
             new Row(
@@ -231,31 +219,23 @@ Future<bool> _onBackPressed() {
               // mainAxisSize: MainAxisSize.max,
               children: <Widget>[
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: FlatButton(
-                      onPressed: () {
-                        print('Assign sac');
-                        barcodeScanning('assign');
-                      },
-                      child: Image.asset('assets/scan-barcode.png',
-                          width: 150, height: 125),
-                    ),
-                    // You can add a Icon instead of text also, like below.
-                    //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                  child: FlatButton(
+                    onPressed: () {
+                      print('Assign sac');
+                      barcodeScanning('assign');
+                    },
+                    child: Image.asset('assets/scan-barcode.png',
+                        width: 150, height: height/5),
                   ),
                 ),
                 Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 8),
-                    child: FlatButton(
-                      onPressed: () {
-                        print('collect sac');
-                        barcodeScanning('collect');
-                      },
-                      child: Image.asset('assets/scan-barcode.png',
-                          width: 150, height: 125),
-                    ),
+                  child: FlatButton(
+                    onPressed: () {
+                      print('collect sac');
+                      barcodeScanning('collect');
+                    },
+                    child: Image.asset('assets/scan-barcode.png',
+                        width: 150, height: height/5),
                   ),
                 ),
               ],
@@ -309,18 +289,18 @@ Future<bool> _onBackPressed() {
     );
     final readButton = Container(
       //padding: EdgeInsets.symmetric(vertical: 16.0),
-      padding: EdgeInsets.only(top: 16, bottom: 2),
+      //padding: EdgeInsets.only(top: 12, bottom: 2),
       width: MediaQuery.of(context).size.width,
+      //height: height*0.4,
       child: Column(
-        /*crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,*/
+        mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               Container(
-                height: 40.0,
+                height: height * 0.4 * 0.17,
                 width: 150,
                 decoration: BoxDecoration(
                     color: Color.fromRGBO(55, 230, 199, 1.0),
@@ -344,7 +324,7 @@ Future<bool> _onBackPressed() {
                 ),
               ),
               Container(
-                height: 40.0,
+                height: height * 0.4 * 0.17,
                 width: 150,
                 decoration: BoxDecoration(
                     color: Color.fromRGBO(55, 230, 199, 1.0),
@@ -489,15 +469,18 @@ Future<bool> _onBackPressed() {
     );
 
     return WillPopScope(
-      onWillPop:_onBackPressed ,
-          child: Scaffold(
-      key: _scaffoldKey,
-      //resizeToAvoidBottomInset: false,
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[topContent, bottomContent],
+      onWillPop: _onBackPressed,
+      child: Scaffold(
+        key: _scaffoldKey,
+        //resizeToAvoidBottomInset: false,
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              Container(height: height * 0.6, child: topContent),
+              bottomContent
+            ],
+          ),
         ),
-      ),
       ),
     );
   }

@@ -89,9 +89,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
   final pageOptions = [
          
                            
-         new HomePage(_token),
+         new HomePage(),
          
-         new HistoriquePage(_token),   
+         new HistoriquePage(),   
   
     ];
 

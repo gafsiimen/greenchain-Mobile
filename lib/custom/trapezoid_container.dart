@@ -17,7 +17,7 @@ class TrapezoidContainer extends StatelessWidget{
         width: width,
         color: color,
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: children,
         ),
