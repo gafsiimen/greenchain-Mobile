@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:dio/dio.dart' as dio;
 import 'package:flutter/foundation.dart' show debugPrint;
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
+// import 'package:path/path.dart' as path;
 
 class Response {
   final String token;
@@ -54,7 +54,7 @@ class User {
 class History {
   
   final DateTime date;
-  final String barcode;
+  final int barcode;
 
   History({this.date,this.barcode });
   
@@ -184,24 +184,26 @@ class MyHttpException extends HttpException {
 
 class ApiService {
   
-  //static const int port = 8000;
+
   static const String Authorization = 'access_token';
 
   static ApiService instance;
   factory ApiService() => instance ??= ApiService._internal();
   ApiService._internal();
 
-  get baseUrl => 'http://192.168.43.119:8000/';
-  get apiUrl => 'http://192.168.43.119:8000/api/';
+  get baseUrl => 'http://greenchain.insodev.fr/';
+  get apiUrl => 'http://greenchain.insodev.fr/api/';
 
   // return message and token
-  Future<http.Response> post(String url, var body){
-    return http.post(url,body: body, headers: {
-      //'Content-Type':'application/json',
-      'Accept': 'application/json'
-    });
+  Future<http.Response> post(String url,body){
+    print("var body" + body);
+    Map headers = {
+  'Content-type' : 'application/x-www-form-urlencoded',
+  'Accept': 'application/json',
+};
+    return http.post(url,body:json.encode(body).toString(), headers: headers);
   }
-    Future<http.Response> get(String url,String token){
+  Future<http.Response> get(String url,String token){
     return http.get(url,headers: {
       'Accept': 'application/json',
       'Authorization' : token
@@ -225,20 +227,45 @@ class ApiService {
   
   Future<Login> signIn(String email, String password) async {
       String url = Uri.encodeFull(apiUrl+'auth/Mlogin');
-      var body = {"email": email, "password": password};
+      
+      var body = {'email':email,'password':password};
+
       try{
-      http.Response response = await post(url,body);
+     dio.Response response = (await dio.Dio().post(url,data:body,
+     options: new dio.Options(contentType:ContentType.parse("application/x-www-form-urlencoded")))) ;
+   
       
+      // http.Response response = await post(url,body);
+      print("body:" + body.toString());
+      print("email:" + email);
+      print("password:" + password);
       print("Response: "+ response.toString());
-      print("Response Body: "+ response.body);
+      // print("Response Body: "+ response);
       
-      Login login = Login.fromJson(json.decode(response.body));
-      login.code=response.statusCode;
-      return login;      
-  } on SocketException catch (_) {
-  print('not connected'); 
-      }
+       Login login = Login.fromJson(json.decode(response.toString()));
+       login.code=response.statusCode;
+       return login;      
+  } on dio.DioError catch(e) {
+    
+   print('not connected'); 
+   if(e.response != null) {
+        print("response.data"+e.response.data);
+        print("response.headers");
+        print(e.response.headers);
+        print("response.request");
+        print(e.response.request);
+    } else{
+        // Something happened in setting up or sending the request that triggered an Error
+        print("e.request");
+        print(e.request);
+        print("e.message");
+        print(e.message);
+
+    }
+       }
+      
   } 
+
   
   Future<User> getUserProfile(String token) async {
     String url = Uri.encodeFull(apiUrl+'auth/user');
@@ -376,7 +403,7 @@ Future<WStat> workerNumbers(String token) async {
     String url = Uri.encodeFull(apiUrl+'worker/MySacsHistory');
 
     http.Response response = await get(url,token);
-    print("Response Body: "+ response.body);   
+    // print("Response Body: "+ response.body);   
     var resBody = json.decode(response.body);
     var data= resBody["All_History"];
     //print("trieurs  = "+ data.toString());
@@ -412,69 +439,70 @@ Future<WStat> workerNumbers(String token) async {
   }*/
 
   // return message
-  Future<Response> registerUser(
-      String name, String email, String password) async {
-    final url = new Uri.https('192.168.1.101:8000', '/users');
-    final body = <String, String>{
-      'name': name,
-      'email': email,
-      'password': password,
-    };
-    final decoded = await NetworkUtils.post(url, body: body);
-    return new Response.fromJson(decoded);
-  }
+  // Future<Response> registerUser(
+  //     String name, String email, String password) async {
+  //   final url = new Uri.https('192.168.1.101:8000', '/users');
+  //   final body = <String, String>{
+  //     'name': name,
+  //     'email': email,
+  //     'password': password,
+  //   };
+  //   final decoded = await NetworkUtils.post(url, body: body);
+  //   return new Response.fromJson(decoded);
+  // }
 
 
   // return message
-  Future<Response> changePassword(
-      String email, String password, String newPassword, String token) async {
-    final url = new Uri.http('192.168.1.101:8000', "/users/$email/password");
-    final body = {'password': password, 'new_password': newPassword};
-    final json = await NetworkUtils.put(
-      url,
-      headers: {Authorization: token},
-      body: body,
-    );
-    return Response.fromJson(json);
-  }
+  // Future<Response> changePassword(
+  //     String email, String password, String newPassword, String token) async {
+  //   final url = new Uri.http('192.168.1.101:8000', "/users/$email/password");
+  //   final body = {'password': password, 'new_password': newPassword};
+  //   final json = await NetworkUtils.put(
+  //     url,
+  //     headers: {Authorization: token},
+  //     body: body,
+  //   );
+  //   return Response.fromJson(json);
+  // }
 
   // return message
   // special token and newPassword to reset password,
   // otherwise, send an email to email
-  Future<Response> resetPassword(String email,
-      {String token, String newPassword}) async {
-    final url = new Uri.https('192.168.1.101:8000', '/users/$email/password');
-    final task = token != null && newPassword != null
-        ? NetworkUtils.post(url, body: {
-            'token': token,
-            'new_password': newPassword,
-          })
-        : NetworkUtils.post(url);
-    final json = await task;
-    return Response.fromJson(json);
-  }
 
-  Future<User> uploadImage(File file, String email) async {
-    final url = new Uri.https('192.168.1.101:8000', '/users/upload');
-    final stream = new http.ByteStream(file.openRead());
-    final length = await file.length();
-    final request = new http.MultipartRequest('POST', url)
-      ..fields['user'] = email
-      ..files.add(
-        new http.MultipartFile('my_image', stream, length, filename: path.basename(file.path)),
-      );
-    final streamedReponse = await request.send();
-    final statusCode = streamedReponse.statusCode;
-    final decoded = json.decode(await streamedReponse.stream.bytesToString());
+  // Future<Response> resetPassword(String email,
+  //     {String token, String newPassword}) async {
+  //   final url = new Uri.https('192.168.1.101:8000', '/users/$email/password');
+  //   final task = token != null && newPassword != null
+  //       ? NetworkUtils.post(url, body: {
+  //           'token': token,
+  //           'new_password': newPassword,
+  //         })
+  //       : NetworkUtils.post(url);
+  //   final json = await task;
+  //   return Response.fromJson(json);
+  // }
 
-    debugPrint('decoded: $decoded');
+  // Future<User> uploadImage(File file, String email) async {
+  //   final url = new Uri.https('192.168.1.101:8000', '/users/upload');
+  //   final stream = new http.ByteStream(file.openRead());
+  //   final length = await file.length();
+  //   final request = new http.MultipartRequest('POST', url)
+  //     ..fields['user'] = email
+  //     ..files.add(
+  //       new http.MultipartFile('my_image', stream, length, filename: path.basename(file.path)),
+  //     );
+  //   final streamedReponse = await request.send();
+  //   final statusCode = streamedReponse.statusCode;
+  //   final decoded = json.decode(await streamedReponse.stream.bytesToString());
 
-    if (statusCode < 200 || statusCode >= 300) {
-      throw MyHttpException(statusCode, decoded['message']);
-    }
+  //   debugPrint('decoded: $decoded');
 
-    return User.fromJson(decoded);
-  }
+  //   if (statusCode < 200 || statusCode >= 300) {
+  //     throw MyHttpException(statusCode, decoded['message']);
+  //   }
+
+  //   return User.fromJson(decoded);
+  // }
 }
 
 class NetworkUtils {

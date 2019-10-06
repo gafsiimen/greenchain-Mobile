@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:ui';
 import 'package:barcode_scan/barcode_scan.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 import 'package:node_auth/HistoriquePage.dart';
 
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
@@ -14,9 +15,8 @@ import 'package:node_auth/main.dart';
 
 class HomePage extends StatefulWidget {
   final String token;
-  //final String email;
-
   HomePage(this.token);
+
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -37,15 +37,15 @@ class _HomePageState extends State<HomePage> {
 
   final _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-   get baseUrl => _apiService.baseUrl;
+  get baseUrl => _apiService.baseUrl;
 
   @override
   void initState() {
     super.initState();
 
     _token = widget.token;
-    //_email = widget.email;
-//    _createdAt = 'loading...';
+     print("_token in HOOOOOOOOOOOOOME");
+     print(_token);
     _apiService = new ApiService();
 
     getUserInformation();
@@ -64,31 +64,29 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-  
-   
-      return Scaffold(
-           key: _scaffoldKey,
-           resizeToAvoidBottomInset: false,
-           /*appBar: new AppBar(
+    return Scaffold(
+      key: _scaffoldKey,
+      resizeToAvoidBottomInset: false,
+      /*appBar: new AppBar(
              title: new Text('Mon profil'),
            ),*/
-           body: WillPopScope(
-         onWillPop: _onBackPressed,
-         child:Container(
-             decoration: new BoxDecoration(
-                 /* image: new DecorationImage(
+      body: WillPopScope(
+        onWillPop: _onBackPressed,
+        child: Container(
+          decoration: new BoxDecoration(
+              /* image: new DecorationImage(
                      image: new AssetImage('assets/bg.jpg'),
                      fit: BoxFit.cover,
                      colorFilter: new ColorFilter.mode(
                          Colors.blueAccent.withAlpha(0xBF), BlendMode.darken))*/
-                 ),
-             child: new Column(
-               mainAxisAlignment: MainAxisAlignment.start,
-               mainAxisSize: MainAxisSize.max,
-               children: <Widget>[
-                 Padding(
-                   padding: const EdgeInsets.only(top: 20),
-                   child: Row(
+              ),
+          child: new Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 20),
+              child: Row(
                      crossAxisAlignment: CrossAxisAlignment.start,
                      children: <Widget>[
                        InkWell(
@@ -115,23 +113,22 @@ class _HomePageState extends State<HomePage> {
                      ],
                    ),
                  ),
-                 Padding(
-                   padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                   child: new Card(
-                     color: Colors.blue[50].withOpacity(1.0),
-                     child: new Padding(
-                       padding: const EdgeInsets.all(8),
-                       child: new Column(
-                         children: <Widget>[
-                           new Row(
-                             crossAxisAlignment: CrossAxisAlignment.center,
-                             children: <Widget>[
-                               ClipOval(
-                                 child: new GestureDetector(
-                                   child: _user?.avatar != null
-                                       ? Image.network(
-                                           (baseUrl +
-                                            _user?.avatar),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                child: new Card(
+                  color: Colors.blue[50].withOpacity(1.0),
+                  child: new Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: new Column(
+                      children: <Widget>[
+                        new Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            ClipOval(
+                              child: new GestureDetector(
+                                child: _user?.avatar != null
+                                    ? Image.network(
+                                        (baseUrl + _user?.avatar),
                                         /*Uri.https(
                                                 ApiService.baseUrl, _user?.avatar)
                                             .toString(),*/
@@ -390,81 +387,111 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: Container(
-                  color: Color.fromRGBO(55, 230, 199, 1.0),
-                  height: 50,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Icon(Icons.home, color: Colors.black, size: 30),
-                      IconButton(
-                        icon:
-                            Icon(Icons.history, color: Colors.black, size: 30),
-                        onPressed: () {
-                          print('tapped Scanner');
-                          Navigator.of(context).pushReplacement(
-                            new MaterialPageRoute(
-                              builder: (context) => new HistoriquePage(_token),
-                              fullscreenDialog: true,
-                              maintainState: false,
-                            ),
-                          );
-                        },
-                      ),
-                      /*IconButton(
-                      icon: Icon(Icons.blur_on, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.hotel, color: Colors.white),
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.account_box, color: Colors.white),
-                      onPressed: () {},
-                    )*/
-                    ],
-                  ),
-                ),
-              ),
+
+              // Padding(
+              //   padding: const EdgeInsets.only(top: 16.0),
+              //   child: Container(
+              //     color: Color.fromRGBO(55, 230, 199, 1.0),
+              //     height: 50,
+              //     child: Row(
+              //       crossAxisAlignment: CrossAxisAlignment.stretch,
+              //       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              //       children: <Widget>[
+              //         Icon(Icons.home, color: Colors.black, size: 30),
+              //         IconButton(
+              //           icon:
+              //               Icon(Icons.history, color: Colors.black, size: 30),
+              //           onPressed: () {
+              //             print('tapped Scanner');
+              //             Navigator.of(context).pushReplacement(
+              //               new MaterialPageRoute(
+              //                 builder: (context) => new HistoriquePage(_token),
+              //                 fullscreenDialog: true,
+              //                 maintainState: false,
+              //               ),
+              //             );
+              //           },
+              //         ),
+              /*IconButton(
+                                 icon: Icon(Icons.blur_on, color: Colors.white),
+                                 onPressed: () {},
+                               ),
+                               IconButton(
+                                 icon: Icon(Icons.hotel, color: Colors.white),
+                                 onPressed: () {},
+                               ),
+                               IconButton(
+                                 icon: Icon(Icons.account_box, color: Colors.white),
+                                 onPressed: () {},
+                               )*/
             ],
           ),
         ),
       ),
+      //      bottomNavigationBar:BottomNavyBar(
+      // selectedIndex: _selectedIndex,
+      // showElevation: true, // use this to remove appBar's elevation
+      // onItemSelected: (index) => setState(() {
+      //       _selectedIndex = index;
+
+      //      _pageController.animateToPage(index,
+      //                      duration: Duration(milliseconds: 300), curve: Curves.ease);
+      //                }),
+
+      //            items: [
+      //              BottomNavyBarItem(
+      //                  icon: Icon(Icons.home),
+      //                  title: Text('Dashboard'),
+      //                  activeColor: Colors.pink),
+      //              BottomNavyBarItem(
+      //                icon: Icon(Icons.apps),
+      //                title: Text('Historique'),
+      //                activeColor: Color.fromRGBO(55, 230, 199, 1.0),
+      //              ),
+      //              //  BottomNavyBarItem(
+      //              //      icon: Icon(Icons.people),
+      //              //      title: Text('Users'),
+      //              //      activeColor: Colors.purpleAccent
+      //              //  ),
+
+      //              //  BottomNavyBarItem(
+      //              //      icon: Icon(Icons.settings),
+      //              //      title: Text('Settings'),
+      //              //      activeColor: Colors.blue
+      //              //  ),
+      //            ],
+      //          ),
     );
   }
-/*_displayDialog(BuildContext context) async {
-    return showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('Saisir code à barre'),
-            content: TextField(
-              //controller: _textFieldController,
-              decoration: InputDecoration(hintText: "12 digits barcode"),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-
-                child: new Text('CANCEL'), 
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-              new FlatButton(
-            color: Colors.lightGreen,
-            child: new Text('Confirm', style: TextStyle(color: Colors.red)),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-            ],
-          );
-        });
-} */
+  /*_displayDialog(BuildContext context) async {
+               return showDialog(
+                   context: context,
+                   builder: (context) {
+                     return AlertDialog(
+                       title: Text('Saisir code à barre'),
+                       content: TextField(
+                         //controller: _textFieldController,
+                         decoration: InputDecoration(hintText: "12 digits barcode"),
+                       ),
+                       actions: <Widget>[
+                         new FlatButton(
+           
+                           child: new Text('CANCEL'), 
+                           onPressed: () {
+                             Navigator.of(context).pop();
+                           },
+                         ),
+                         new FlatButton(
+                       color: Colors.lightGreen,
+                       child: new Text('Confirm', style: TextStyle(color: Colors.red)),
+                       onPressed: () {
+                         Navigator.of(context).pop();
+                       },
+                     ),
+                       ],
+                     );
+                   });
+           } */
 
   Future<String> _asyncInputDialog(BuildContext context) async {
     //String barcode = '';
@@ -590,7 +617,7 @@ class _HomePageState extends State<HomePage> {
     return double.tryParse(str) != null;
   }
 
-// Method for scanning barcode....
+  // Method for scanning barcode....
   Future barcodeScanning() async {
     try {
       String barcode = await BarcodeScanner.scan();
@@ -802,7 +829,7 @@ class _HomePageState extends State<HomePage> {
     }
   }*/
 
-class ChangePasswordBottomSheet extends StatefulWidget {
+/*class ChangePasswordBottomSheet extends StatefulWidget {
   final String email;
   final String token;
 
@@ -989,3 +1016,4 @@ class _ChangePasswordBottomSheetState extends State<ChangePasswordBottomSheet> {
     }
   }
 }
+*/

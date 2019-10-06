@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -7,10 +8,12 @@ import 'package:node_auth/api_service.dart';
 import 'package:node_auth/home.dart';
 import 'package:node_auth/CoachDashboard3.dart';
 import 'package:node_auth/MenuDashboardPage.dart';
-
+import 'package:dio/dio.dart' as dio;
 import 'package:node_auth/register.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
+import 'package:node_auth/testbottombar.dart';
+import 'package:node_auth/workerPages.dart';
 //import 'package:http/http.dart' as http;
 
 void main() {
@@ -31,9 +34,9 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: new ThemeData.light(),
       home: new LoginPage(),
-      routes: {
-        '/register_page': (context) => new RegisterPage(),
-      },
+      // routes: {
+      //   '/register_page': (context) => new RegisterPage(),
+      // },
     );
   }
 }
@@ -57,6 +60,8 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
   Animation<double> _buttonSqueezeAnimation;
 
   ApiService apiService;
+
+  get apiUrl => 'http://greenchain.insodev.fr/api/';
 
   @override
   void initState() {
@@ -115,9 +120,10 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
             padding: EdgeInsets.fromLTRB(220.0, 75.0, 0.0, 0.0),
             child: Text('.',
                 style: TextStyle(
-                    fontSize: 80.0,
-                    fontWeight: FontWeight.bold,
-                    color: Color.fromRGBO(0, 69, 241, 1),)), //blue
+                  fontSize: 80.0,
+                  fontWeight: FontWeight.bold,
+                  color: Color.fromRGBO(0, 69, 241, 1),
+                )), //blue
           )
         ],
       ),
@@ -178,7 +184,9 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 color: new Color.fromRGBO(221, 36, 118, 1), //pink
                 child: new Text(
                   'LOGIN',
-                  style: new TextStyle(color: new Color.fromRGBO(55, 230, 199, 1), fontSize: 16.0), //my pistache
+                  style: new TextStyle(
+                      color: new Color.fromRGBO(55, 230, 199, 1),
+                      fontSize: 16.0), //my pistache
                 ),
                 splashColor: new Color.fromRGBO(0, 69, 241, 1), //blue
               )
@@ -187,7 +195,9 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                     new EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
                 child: new CircularProgressIndicator(
                   strokeWidth: 4.0,
-                  valueColor: new AlwaysStoppedAnimation<Color>(new Color.fromRGBO(221, 36, 118, 1),), //pink
+                  valueColor: new AlwaysStoppedAnimation<Color>(
+                    new Color.fromRGBO(221, 36, 118, 1),
+                  ), //pink
                 ),
               ),
       ),
@@ -221,8 +231,8 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.only(bottom:8),
-                                  child: new Padding(
+                  padding: const EdgeInsets.only(bottom: 8),
+                  child: new Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: jalal,
                   ),
@@ -259,7 +269,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     );
   }
 
-  void _login() {
+  Future _login() async {
     if (!_formKey.currentState.validate()) {
       _scaffoldKey.currentState.showSnackBar(
         new SnackBar(content: new Text('Invalid information')),
@@ -270,40 +280,53 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
     _formKey.currentState.save();
     _loginButtonController.reset();
     _loginButtonController.forward();
-try{
-    apiService.signIn(_email, _password).then((Login login) {
+
+    String url = Uri.encodeFull(apiUrl + 'auth/Mlogin');
+    var body = {'email': _email, 'password': _password};
+    try {
+      dio.Response response = (await dio.Dio().post(url,
+          data: body,
+          options: new dio.Options(
+              contentType:
+                  ContentType.parse("application/x-www-form-urlencoded"))));
+      Login login = Login.fromJson(json.decode(response.toString()));
       print('shit works');
       _loginButtonController.reset();
-      //print(response);
-      /*_loginButtonController.reverse();*/
+      print(response);
 
-      if (login.code == 200) { 
+      if (response.statusCode == 200) {
         if (login.role == 'worker') {
           Navigator.of(context).pushReplacement(
             new MaterialPageRoute(
-              builder: (context) => new HomePage(login.access_token),
+              builder: (context) => new BottomNavBar (login.access_token),
+              //new WorkerPages(login.access_token),
+              //new HomePage(login.access_token),
               fullscreenDialog: true,
               maintainState: false,
             ),
           );
         } else {
           Navigator.of(context).pushReplacement(
-        new MaterialPageRoute(
-          builder: (context) => new MenuDashboardPage(login.access_token),
-          fullscreenDialog: true,
-          maintainState: false,
-        ),
-      );
+            new MaterialPageRoute(
+              builder: (context) => new MenuDashboardPage(login.access_token),
+              fullscreenDialog: true,
+              maintainState: false,
+            ),
+          );
         }
-      } else if (login.code == 404) {
+      } 
+    } on dio.DioError catch (e) {
+      print('Exception !!!!!!!');
+      if (e.response != null) {
+    if (e.response.statusCode == 404) {
         _loginButtonController.reset();
 
-        final message = 'Email/Password incorrects';
+        final message = 'Email/Password incorrect';
 
         _scaffoldKey.currentState.showSnackBar(
           new SnackBar(content: new Text(message)),
         );
-      } else if (login.code == 403) {
+      } else if (e.response.statusCode == 403) {
         _loginButtonController.reset();
 
         final message = 'Vous n"etes pas autorisé';
@@ -311,7 +334,7 @@ try{
         _scaffoldKey.currentState.showSnackBar(
           new SnackBar(content: new Text(message)),
         );
-      } else if (login.code == 401) {
+      } else if (e.response.statusCode == 401) {
         _loginButtonController.reset();
 
         final message = 'Merci d"attendre la confirmation';
@@ -319,37 +342,29 @@ try{
         _scaffoldKey.currentState.showSnackBar(
           new SnackBar(content: new Text(message)),
         );
+      }
+
       } else {
-        _loginButtonController.reset();
-
-        final message = 'Unknown error occurred';
-
         _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(content: new Text(message)),
+          new SnackBar(
+              content: new Text('Vérifier votre connexion internet !')),
         );
+        _loginButtonController.reset();
       }
     }
-    );} on SocketException catch (e) {
-  print('not connected'); 
- _scaffoldKey.currentState.showSnackBar(
-          new SnackBar(content: new Text('not connected')),
-        );
-      _loginButtonController.reset();
-    }
-
   }
 
-  _resetPassword() {
-    showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) {
-        return new ResetPasswordDialog();
-      },
-    );
-  }
+  // _resetPassword() {
+  //   showDialog(
+  //     barrierDismissible: false,
+  //     context: context,
+  //     builder: (context) {
+  //       return new ResetPasswordDialog();
+  //     },
+  //   );
+  // }
 }
-
+/*
 class ResetPasswordDialog extends StatefulWidget {
   @override
   _ResetPasswordDialogState createState() => _ResetPasswordDialogState();
@@ -565,3 +580,4 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
     });
   }
 }
+*/
