@@ -7,6 +7,8 @@ import 'package:node_auth/custom/trapezoid_container.dart';
 import 'package:node_auth/main.dart';
 import 'package:node_auth/api_service.dart';
 
+import 'GorgeousLogin.dart';
+
 final Color backgroundColor = Color(0xFF4A4A58);
 var darkGreenColor = Color(0xff279152);
 
@@ -63,7 +65,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
   Future<bool> _onBackPressed() {
     return Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
-        builder: (context) => new LoginPage(),
+        builder: (context) => new GorgeousLogin(),
         fullscreenDialog: true,
         maintainState: false,
       ),
@@ -244,7 +246,7 @@ class _MenuDashboardPageState extends State<MenuDashboardPage>
                             print('tapped logout');
                             Navigator.of(context).pushReplacement(
                               new MaterialPageRoute(
-                                builder: (context) => new LoginPage(),
+                                builder: (context) => new GorgeousLogin(),
                                 fullscreenDialog: true,
                                 maintainState: false,
                               ),

@@ -12,6 +12,8 @@ import 'package:node_auth/api_service.dart';
 import './custom/my_flutter_app_icons.dart' as MyFlutterApp;
 import 'package:http/http.dart' as http;
 
+import 'GorgeousLogin.dart';
+
 final Color backgroundColor = Color(0xFF4A4A58);
 var darkGreenColor = Color(0xff279152);
 
@@ -259,7 +261,7 @@ Future<bool> _onBackPressed() {
                             print('tapped logout');
                             Navigator.of(context).pushReplacement(
                               new MaterialPageRoute(
-                                builder: (context) => new LoginPage(),
+                                builder: (context) => new GorgeousLogin(),
                                 fullscreenDialog: true,
                                 maintainState: false,
                               ),

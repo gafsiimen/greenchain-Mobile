@@ -1,19 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-
 import 'package:node_auth/api_service.dart';
-
 import 'package:node_auth/MenuDashboardPage.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:node_auth/GorgeousLogin.dart';
-import 'package:node_auth/register.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_stetho/flutter_stetho.dart';
 import 'package:node_auth/testbottombar.dart';
-import 'package:node_auth/workerPages.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -33,7 +27,7 @@ class MyApp extends StatelessWidget {
     return new MaterialApp(
       title: 'Flutter Demo',
       theme: new ThemeData.light(),
-      home: new GorgeousLogin(),
+      home: new LoginPageNew(),
       // routes: {
       //   '/register_page': (context) => new RegisterPage(),
       // },
@@ -41,12 +35,12 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class LoginPage extends StatefulWidget {
+class LoginPageNew extends StatefulWidget {
   @override
-  _MyLoginPageState createState() => new _MyLoginPageState();
+  _MyLoginPageNewState createState() => new _MyLoginPageNewState();
 }
 
-class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
+class _MyLoginPageNewState extends State<LoginPageNew> with TickerProviderStateMixin {
   String _email, _password;
   static const String emailRegExpString =
       r'[a-zA-Z0-9\+\.\_\%\-\+]{1,256}\@[a-zA-Z0-9][a-zA-Z0-9\-]{0,64}(\.[a-zA-Z0-9][a-zA-Z0-9\-]{0,25})+';
@@ -61,13 +55,15 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
 
   ApiService apiService;
 
-  get apiUrl => 'http://greenchain.insodev.fr/api/';
+  get apiUrl => apiService.apiUrl;
 
   @override
   void initState() {
     super.initState();
+
     _loginButtonController = new AnimationController(
         vsync: this, duration: Duration(milliseconds: 2000));
+
     _buttonSqueezeAnimation = new Tween(
       begin: 320.0,
       end: 70.0,
@@ -77,6 +73,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
         debugPrint(_buttonSqueezeAnimation.value.toString());
         setState(() {});
       });
+
     apiService = new ApiService();
   }
 
@@ -187,8 +184,8 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
                 child: new Text(
                   'LOGIN',
                   style: new TextStyle(
-                      color: new Color.fromRGBO(55, 230, 199, 1),
-                      fontSize: 16.0), //my pistache
+                      color: new Color.fromRGBO(55, 230, 199, 1),   //my pistache
+                      fontSize: 16.0), 
                 ),
                 splashColor: new Color.fromRGBO(0, 69, 241, 1), //blue
               )
@@ -205,19 +202,7 @@ class _MyLoginPageState extends State<LoginPage> with TickerProviderStateMixin {
       ),
     );
 
-    /*final needAnAccount = new FlatButton(
-      onPressed: () {
-        Navigator.of(context).pushNamed('/register_page');
-      },
-      child: new Text(
-        "Don't have an account? Sign up",
-        style: new TextStyle(
-          color: Colors.white70,
-          fontStyle: FontStyle.italic,
-          fontSize: 14.0,
-        ),
-      ),
-    );*/
+   
 
     return new Scaffold(
       //resizeToAvoidBottomInset: true,
@@ -411,7 +396,7 @@ class _ResetPasswordDialogState extends State<ResetPasswordDialog> {
       maxLines: 1,
       style: new TextStyle(fontSize: 16.0),
       onSaved: (s) => _email = s,
-      validator: (s) => _MyLoginPageState.emailRegExp.hasMatch(s)
+      validator: (s) => _MyLoginPageNewState.emailRegExp.hasMatch(s)
           ? null
           : 'Invalid email address!',
     );

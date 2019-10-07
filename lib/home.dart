@@ -9,12 +9,11 @@ import 'package:node_auth/api_service.dart';
 import 'package:http/http.dart' as http;
 import 'package:node_auth/main.dart';
 
+import 'GorgeousLogin.dart';
+
 //import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
-  
-
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -37,31 +36,29 @@ class _HomePageState extends State<HomePage> {
   get baseUrl => _apiService.baseUrl;
   SharedPreferences prefs;
 
-
   @override
   void initState() {
     super.initState();
-  _gettingToken();
+    _gettingToken();
 
     _apiService = new ApiService();
-
-    
   }
- _gettingToken() async {
-     SharedPreferences.getInstance().then((onValue){
-       prefs=onValue;
-       _token = prefs.getString('token');
-     print("_token in HOOOOOOOOOOOOOME");
-     print(_token);
-     getUserInformation();
-    getWorkerStats();
 
-     });
+  _gettingToken() async {
+    SharedPreferences.getInstance().then((onValue) {
+      prefs = onValue;
+      _token = prefs.getString('token');
+      print("_token in HOOOOOOOOOOOOOME");
+      print(_token);
+      getUserInformation();
+      getWorkerStats();
+    });
   }
+
   Future<bool> _onBackPressed() {
     return Navigator.of(context).pushReplacement(
       new MaterialPageRoute(
-        builder: (context) => new LoginPage(),
+        builder: (context) => new GorgeousLogin(),
         fullscreenDialog: true,
         maintainState: false,
       ),
@@ -72,53 +69,38 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       /*appBar: new AppBar(
              title: new Text('Mon profil'),
            ),*/
       body: WillPopScope(
         onWillPop: _onBackPressed,
-        child: Container(
-          decoration: new BoxDecoration(
-              /* image: new DecorationImage(
-                     image: new AssetImage('assets/bg.jpg'),
-                     fit: BoxFit.cover,
-                     colorFilter: new ColorFilter.mode(
-                         Colors.blueAccent.withAlpha(0xBF), BlendMode.darken))*/
-              ),
-          child: new Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+        child: SingleChildScrollView(
+                  child: new Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.end,
             mainAxisSize: MainAxisSize.max,
             children: <Widget>[
               Padding(
-                padding: const EdgeInsets.only(top: 20),
-              child: Row(
-                     crossAxisAlignment: CrossAxisAlignment.start,
-                     children: <Widget>[
-                       InkWell(
-                         onTap: () {
-                           print('tapped logout');
-                           Navigator.of(context).pushReplacement(
-                             new MaterialPageRoute(
-                               builder: (context) => new LoginPage(),
-                               fullscreenDialog: true,
-                               maintainState: false,
-                             ),
-                           );
-                         },
-                         child: Padding(
-                           padding: const EdgeInsets.only(
-                               left: 8.0, right: 24, bottom: 8),
-                           child: Icon(
-                             (MyFlutterApp.MyFlutterApp.logout),
-                             size: 40,
-                             color: Colors.red,
-                           ),
-                         ),
-                       ),
-                     ],
-                   ),
-                 ),
+                padding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+                child: InkWell(
+                  onTap: () {
+                    print('tapped logout');
+                    Navigator.of(context).pushReplacement(
+                      new MaterialPageRoute(
+                        builder: (context) => new GorgeousLogin(),
+                        fullscreenDialog: true,
+                        maintainState: false,
+                      ),
+                    );
+                  },
+                  child: Icon(
+                    (MyFlutterApp.MyFlutterApp.logout),
+                    size: 40,
+                    color: Color.fromRGBO(221, 36, 118, 1),
+                  ),
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
                 child: new Card(
@@ -213,15 +195,15 @@ class _HomePageState extends State<HomePage> {
                             //borderRadius: new BorderRadius.circular(30.0),
                             border: new Border.all(
                               width: 3.0,
-                              color: Colors.blue[300].withOpacity(1.0),
+                              color: Color.fromRGBO(55, 230, 199, 1),
                             ),
-                            color: Colors.lightGreen,
+                            color: Color.fromRGBO(221, 36, 118, 1),
                           ),
                           child: new Text(
                               "${_todayScanned != null ? _todayScanned : ""}",
                               // "${_user?.email ?? "loading..."}\n${_user?.role ?? "loading..."}",
                               style: new TextStyle(
-                                  color: Colors.yellow,
+                                  color: Color.fromRGBO(55, 230, 199, 1),
                                   fontFamily: 'Athletic',
                                   fontSize:
                                       50.0)), // You can add a Icon instead of text also, like below.
@@ -236,17 +218,17 @@ class _HomePageState extends State<HomePage> {
                             shape: BoxShape.circle,
                             border: new Border.all(
                               width: 3.0,
-                              color: Colors.orange,
+                              color: Color.fromRGBO(55, 230, 199, 1),
                             ),
                             // You can use like this way or like the below line
                             //borderRadius: new BorderRadius.circular(30.0),
-                            color: Color(0xff32a05f),
+                            color: Color.fromRGBO(0, 69, 241, 1),
                           ),
                           child: new Text(
                               "${_atScanned != null ? _atScanned : ""}",
                               style: new TextStyle(
                                   fontFamily: 'Athletic',
-                                  color: Colors.blue[100],
+                                  color: Color.fromRGBO(55, 230, 199, 1),
                                   fontSize:
                                       50.0)), // You can add a Icon instead of text also, like below.
                           //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
@@ -258,139 +240,133 @@ class _HomePageState extends State<HomePage> {
               ),
               new Center(
                 // texts
-                child: new Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: new Column(
-                    children: <Widget>[
-                      new Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        // mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          new Container(
-                            //width: 50.0,
-                            //height: 50.0,
-                            padding: const EdgeInsets.only(
-                                right:
-                                    30), //I used some padding without fixed width and height
+                child: new Column(
+                  children: <Widget>[
+                    new Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Container(
+                          //width: 50.0,
+                          //height: 50.0,
+                          padding: const EdgeInsets.only(
+                              right:
+                                  30), //I used some padding without fixed width and height
 
-                            child: new Text('Scannés\naujourd\'hui',
-                                textAlign: TextAlign.center,
-                                style: new TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                  fontFamily: 'Ubuntu',
-                                  //fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.bold,
-                                )),
-                            // You can add a Icon instead of text also, like below.
-                            //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                          ),
-                          new Container(
-                            //width: 50.0,
-                            //height: 50.0,
-                            padding: const EdgeInsets.only(
-                                right:
-                                    18), //I used some padding without fixed width and height
+                          child: new Text('Scannés\naujourd\'hui',
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                //fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          // You can add a Icon instead of text also, like below.
+                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                        new Container(
+                          //width: 50.0,
+                          //height: 50.0,
+                          padding: const EdgeInsets.only(
+                              right:
+                                  18), //I used some padding without fixed width and height
 
-                            child: new Text('Totale\nscannés',
-                                textAlign: TextAlign.center,
-                                style: new TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                  fontFamily: 'Ubuntu',
-                                  fontWeight: FontWeight.bold,
-                                )), // You can add a Icon instead of text also, like below.
-                            //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          child: new Text('Totale\nscannés',
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,
+                              )), // You can add a Icon instead of text also, like below.
+                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
               new Center(
                 // texts
-                child: new Padding(
-                  padding: const EdgeInsets.only(top: 0),
-                  child: new Column(
-                    children: <Widget>[
-                      new Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        // mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: FlatButton(
-                                onPressed: () {
-                                  print('enter barcode');
-                                  _asyncInputDialog(context);
-                                },
-                                child: Image.asset('assets/input-barcode.png',
-                                    width: 150, height: 125),
-                              ),
-                              // You can add a Icon instead of text also, like below.
-                              //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                child: new Column(
+                  children: <Widget>[
+                    new Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 8),
+                            child: FlatButton(
+                              onPressed: () {
+                                print('enter barcode');
+                                _asyncInputDialog(context);
+                              },
+                              child: Image.asset('assets/input-barcode.png',
+                                  width: 150, height: 125),
                             ),
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.only(top: 12),
-                              child: FlatButton(
-                                onPressed: () {
-                                  barcodeScanning();
-                                },
-                                child: Image.asset('assets/scan-barcode.png',
-                                    width: 150, height: 116),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      new Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        // mainAxisSize: MainAxisSize.max,
-                        children: <Widget>[
-                          new Container(
-                            //width: 50.0,
-                            //height: 50.0,
-                            // padding: const EdgeInsets.only(left:0 ), //I used some padding without fixed width and height
-
-                            child: new Text('Saisir\ncode à barre',
-                                textAlign: TextAlign.center,
-                                style: new TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                  fontFamily: 'Ubuntu',
-                                  //fontStyle: FontStyle.italic,
-                                  fontWeight: FontWeight.bold,
-                                )),
                             // You can add a Icon instead of text also, like below.
                             //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
                           ),
-                          new Container(
-                            //width: 50.0,
-                            //height: 50.0,
-                            // padding: const EdgeInsets.only(right:0 ),
-                            //I used some padding without fixed width and height
-
-                            child: new Text('Scanner\ncode à barre',
-                                textAlign: TextAlign.center,
-                                style: new TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 20.0,
-                                  fontFamily: 'Ubuntu',
-                                  fontWeight: FontWeight.bold,
-                                )), // You can add a Icon instead of text also, like below.
-                            //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 12),
+                            child: FlatButton(
+                              onPressed: () {
+                                barcodeScanning();
+                              },
+                              child: Image.asset('assets/scan-barcode.png',
+                                  width: 150, height: 116),
+                            ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+                      ],
+                    ),
+                    new Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      // mainAxisSize: MainAxisSize.max,
+                      children: <Widget>[
+                        new Container(
+                          //width: 50.0,
+                          //height: 50.0,
+                          // padding: const EdgeInsets.only(left:0 ), //I used some padding without fixed width and height
+
+                          child: new Text('Saisir\ncode à barre',
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                //fontStyle: FontStyle.italic,
+                                fontWeight: FontWeight.bold,
+                              )),
+                          // You can add a Icon instead of text also, like below.
+                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                        new Container(
+                          //width: 50.0,
+                          //height: 50.0,
+                          // padding: const EdgeInsets.only(right:0 ),
+                          //I used some padding without fixed width and height
+
+                          child: new Text('Scanner\ncode à barre',
+                              textAlign: TextAlign.center,
+                              style: new TextStyle(
+                                color: Colors.black,
+                                fontSize: 20.0,
+                                fontFamily: 'Ubuntu',
+                                fontWeight: FontWeight.bold,
+                              )), // You can add a Icon instead of text also, like below.
+                          //child: new Icon(Icons.arrow_forward, size: 50.0, color: Colors.black38)),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
 

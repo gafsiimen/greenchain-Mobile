@@ -18,6 +18,7 @@ dependencies:
   dio: 2.1.16
   curved_navigation_bar: ^0.3.1
   shared_preferences: ^0.5.3+4
+  font_awesome_flutter: ^8.0.1
 
   
 
@@ -50,7 +51,7 @@ flutter:
    - assets/full.png
    - assets/empty2.png
    - assets/full2.png   
-   
+   - assets/login_logo.png   
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.io/assets-and-images/#resolution-aware.
